@@ -10,6 +10,7 @@ import Requests from './components/Requests'
 import Status from './components/Status'
 import Chat from './components/Chat'
 import EditProfile from './components/EditProfile'
+import CollabHub from './components/CollabHub'
 
 const App = function() {
   return (
@@ -26,6 +27,7 @@ const App = function() {
             <Route path = "/request" element = {<Requests/>}/>
             <Route path = "/status" element = {<Status/>}/>
             <Route path = "/chat/:targetUserId" element = {<Chat/>}/>
+            <Route path = "/collab" element = {<CollabHub/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -111,6 +111,7 @@ const NavBar = () => {
                             Feed
                         </Link>
                     </li>
+                    <li><Link to="/collab" onClick = {()=> setOpen(false)}>Collab Hub</Link></li>
                     <li>
                         <Link to="/connections" onClick={() => setOpen(false)}>
                             Connections

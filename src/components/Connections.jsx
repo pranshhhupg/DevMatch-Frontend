@@ -6,68 +6,124 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Connections = () => {
-    const dispatch = useDispatch();
-    let users = useSelector((store)=> store?.connection);
+  const dispatch = useDispatch();
+  let users = useSelector((store) => store?.connection);
 
-    const getConnections = async () => {
-        try{
-            users = await axios.get(BASE_URL + "/user/connections",{
-            withCredentials: true
-            });
-            dispatch(addConnection(users.data.data));
-            
-        }
-        catch(err){
-            console.log(err.response);
-        }
+  const getConnections = async () => {
+    try {
+      users = await axios.get(BASE_URL + "/user/connections", {
+        withCredentials: true,
+      });
+
+      dispatch(addConnection(users.data.data));
+    } catch (err) {
+      console.log(err.response);
     }
+  };
 
-    useEffect(()=>{
-        getConnections();
-    },[])
+  useEffect(() => {
+    getConnections();
+  }, []);
 
-    if(!users || users.length === 0) return (<h1
-    className="text-2xl text-center mx-auto mt-10 p-4">No Connections Found</h1>)
-
+  if (!users || users.length === 0)
     return (
-        <div>
-            <div className="text-center ">
-                <h1 className ="text-4xl font-bold mt-10 text-center">Your Connections</h1>
+      <div className="flex flex-col items-center justify-center mt-24">
+        <div className="text-6xl mb-4">🤝</div>
+
+        <h1 className="text-3xl font-bold">
+          No Connections Yet
+        </h1>
+
+        <p className="text-base-content/50 mt-2 text-center">
+          Start connecting with developers from your feed
+        </p>
+      </div>
+    );
+
+  return (
+    <div className="w-225 mx-auto py-8">
+
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-bold">
+          Your Connections
+        </h1>
+
+        <h3 className="text-base-content/50 text-md">
+          Developers you have connected with
+        </h3>
+      </div>
+
+      {/* Connections List */}
+      <div className="flex flex-col gap-5 bg-base-300 p-7 rounded-2xl">
+
+        {users.map((user) => {
+          const {
+            _id,
+            firstName,
+            lastName,
+            age,
+            gender,
+            photoUrl,
+            about,
+          } = user;
+
+          return (
+            <div
+              key={_id}
+              className="bg-base-200 rounded-3xl p-5 shadow-md border border-base-300 hover:shadow-xl transition-all duration-300"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+
+                {/* Avatar */}
+                <div className="flex justify-center">
+                  <img
+                    src={
+                      photoUrl ||
+                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    }
+                    alt="USER"
+                    className="w-20 h-20 rounded-2xl object-cover border border-base-300"
+                  />
+                </div>
+
+                {/* User Info */}
+                <div className="flex-1">
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-2xl font-bold">
+                      {firstName} {lastName}
+                    </h2>
+
+                    {age && gender && (
+                      <span className="badge badge-outline capitalize">
+                        {age}, {gender}
+                      </span>
+                    )}
+                  </div>
+
+                  {about && (
+                    <p className="text-base-content/60 leading-relaxed text-sm line-clamp-2">
+                      {about}
+                    </p>
+                  )}
+                </div>
+
+                {/* Chat Button */}
+                <div className="flex justify-end">
+                  <Link to={"/chat/" + _id}>
+                    <button className="btn btn-primary rounded-xl px-6">
+                      💬 Chat
+                    </button>
+                  </Link>
+                </div>
+              </div>
             </div>
-
-            {users.map((user)=>{
-                const {_id, firstName, lastName, age, gender, photoUrl, about} = user;
-
-                return (
-                    <div className="flex items-center bg-base-300 w-1/2 mx-auto my-6 p-4 rounded-2xl">
-                        <div className="ml-1 w-30 h-30 overflow-hidden flex-shrink-0">
-                            <img
-                                src={photoUrl}
-                                alt="USER_IMAGE"
-                                className="w-full h-full flex items-center object-cover rounded-full justify-center my-auto"
-                            />
-                        </div>
-                        <div className="ml-7 ">
-                            <h1 className="text-2xl font-bold ">{firstName + " " + lastName}</h1>
-                            <div className="flex">
-                            {age && gender && (<div className="flex">
-                                <h2>{age}</h2>
-                                <h2>{", " + gender}</h2>
-                                </div>
-                            )}
-                            </div>
-                            <h2 className="opacity-60 mt-1 pr-5">{about}</h2>
-                        </div>
-                        <div className="flex justify-end">
-                            <Link to = {"/chat/" + _id}>
-                            <button className = " bg-blue-900 rounded-2xl p-5 mx-2 hover:cursor-pointer">Chat</button>
-                            </Link>
-                        </div>
-                    </div>
-                )
-            })}
-        </div>
-    )
-}
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 export default Connections;
