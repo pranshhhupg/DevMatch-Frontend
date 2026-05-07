@@ -1,67 +1,128 @@
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
+import { BASE_URL } from "../utils/constants";
+import MatchBadge from "./MatchBadge";
 
-const UserCard = ({user}) => {
-    const {_id,firstName, lastName, age, gender, hobbies, photoUrl, about} = user;
-    const dispatch = useDispatch();
+/**
+ * Receives a full feed item: { user, matchScore, matchReasons, matchBreakdown }
+ */
+export default function UserCard({ feedItem }) {
+  const { user, matchScore, matchReasons, matchBreakdown , rawBreakdown} = feedItem;
+  const dispatch = useDispatch();
 
-    const handleRequest = async (status,id) => {
-        try{
-            const req = await axios.post(BASE_URL + "/request/send/" + status + "/" +id,
-                {},
-                {withCredentials:true},
-            )
-    
-            dispatch(removeUserFromFeed(id));
-        }
-        catch(err){
-            console.log(err.response.data);
-        }
+  const { _id, firstName, lastName, photoUrl, about, age, gender, skills = [],
+          experienceLevel, availability, lookingFor = [] } = user;
 
-        
+  const handleAction = async (status) => {
+    try {
+      await axios.post(
+        `${BASE_URL}/request/send/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(removeUserFromFeed(_id));
+    } catch (err) {
+      console.error("Action failed:", err.message);
     }
+  };
 
-    return (
-        <div className="card bg-base-200 w-100 transform transition duration-300 hover:scale-103 mt-10 mx-auto myshadow-sm rounded-2xl hover:cursor-pointer">
-            <figure className="p-5 h-100 overflow-hidden">
-                <img
-                    className="w-full h-full object-cover rounded-2xl"
-                    src={photoUrl}
-                    alt="User Image"
-                />
-            </figure>
-            <div className="card-body mt-[-20px]">
-                <h2 className="card-title text-2xl">{firstName + " " + lastName}</h2>
-                <div className="flex mt-[-10px]">
-                    {age && gender && (<div className="flex">
-                        <h2>{age}</h2>
-                        <h2>{", " + gender}</h2>
-                        </div>
-                    )}
-                </div>
-                <h1 className="text-md text-gray-400 pr-2">{about}</h1>
-                <div className="card-actions justify-center p-2 mt-2">
-                    <button
-                        className="btn px-6 py-3 rounded-xl bg-red-800 py-6 text-white text-base font-medium 
-                        shadow-md transition duration-300 hover:bg-red-900 hover:scale-105 hover:shadow-lg active:scale-95"
-                        onClick={() => handleRequest("ignored", _id)}
-                    >
-                        Not Interested
-                    </button>
+  return (
+    <div className="card bg-base-200 shadow-xl w-80 sm:w-96">
+      {/* Photo */}
+      <figure className="relative">
+        <img
+          src={photoUrl}
+          alt={`${firstName} ${lastName}`}
+          className="w-full h-60 object-cover"
+          onError={(e) => {
+            e.target.src =
+              "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+          }}
+        />
+        {/* Experience badge overlay */}
+        {experienceLevel && (
+          <span className="absolute top-2 right-2 badge badge-neutral capitalize text-xs">
+            {experienceLevel}
+          </span>
+        )}
+      </figure>
 
-                    <button
-                        className="btn px-6 py-3 rounded-xl bg-blue-900 py-6 text-white text-base font-medium 
-                        shadow-md transition duration-300 hover:bg-green-700 hover:scale-105 hover:shadow-lg active:scale-95"
-                        onClick={() => handleRequest("interested", _id)}
-                    >
-                Interested
-                </button>
-                </div>
-            </div>
+      <div className="card-body p-4 gap-2">
+        {/* Name + meta */}
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h2 className="card-title text-base-content text-lg leading-tight">
+              {firstName} {lastName}
+            </h2>
+            {(age || gender) && (
+              <p className="text-xs text-base-content/50 mt-0.5">
+                {[age && `${age}y`, gender].filter(Boolean).join(" · ")}
+              </p>
+            )}
+          </div>
+          {availability && (
+            <span className="badge badge-outline text-xs capitalize shrink-0">
+              {availability}
+            </span>
+          )}
         </div>
-    )
-};
 
-export default UserCard;
+        {/* About */}
+        {about && (
+          <p className="text-sm text-base-content/70 line-clamp-2">{about}</p>
+        )}
+
+        {/* Skills */}
+        {skills.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {skills.slice(0, 5).map((skill) => (
+              <span key={skill} className="badge badge-primary badge-sm text-xs font-medium">
+                {skill}
+              </span>
+            ))}
+            {skills.length > 5 && (
+              <span className="badge badge-ghost badge-sm text-xs">
+                +{skills.length - 5}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Looking for */}
+        {lookingFor.length > 0 && (
+          <p className="text-xs text-base-content/50">
+            Looking for:{" "}
+            <span className="text-primary font-medium">
+              {lookingFor.join(", ")}
+            </span>
+          </p>
+        )}
+
+        {/* Match Badge */}
+        <MatchBadge
+          score={matchScore}
+          reasons={matchReasons}
+          breakdown={matchBreakdown}
+          rawBreakdown={rawBreakdown}
+        />
+
+        {/* Action buttons */}
+        <div className="card-actions justify-between mt-2 gap-2">
+          <button
+            className="btn btn-error btn-sm flex-1"
+            onClick={() => handleAction("ignored")}
+          >
+            ✕ Pass
+          </button>
+          <button
+            className="btn btn-success btn-sm flex-1"
+            onClick={() => handleAction("interested")}
+          >
+            ♥ Connect
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -9,6 +9,7 @@ import Connections from './components/Connections'
 import Requests from './components/Requests'
 import Status from './components/Status'
 import Chat from './components/Chat'
+import EditProfile from './components/EditProfile'
 
 const App = function() {
   return (
@@ -20,6 +21,7 @@ const App = function() {
             <Route path = "/login" element = {<Login/>}/>
             <Route path = "/feed" element = {<Feed/>}/>
             <Route path = "/profile" element = {<Profile/>}/>
+            <Route path = "/profile/edit" element = {<EditProfile/>}/>
             <Route path = "/connections" element = {<Connections/>}/>
             <Route path = "/request" element = {<Requests/>}/>
             <Route path = "/status" element = {<Status/>}/>
