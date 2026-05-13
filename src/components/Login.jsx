@@ -38,7 +38,7 @@ const Login = () => {
             )
 
             dispatch(addUser(res.data.data));
-            navigate("/profile");
+            navigate("/profile/edit");
         }
         catch(err){
             setError(err.response.data);

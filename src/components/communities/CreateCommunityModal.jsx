@@ -58,7 +58,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto">
       <div className="min-h-screen flex items-center justify-center p-3 sm:p-6">
   
-        <div className="w-full max-w-2xl bg-base-100 rounded-3xl border border-base-300 shadow-[0_20px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+        <div className="w-full max-w-4xl bg-base-100 rounded-xl border border-base-300 shadow-[0_20px_60px_rgba(0,0,0,0.45)] overflow-hidden">
   
           {/* Header */}
           <div className="relative p-5 sm:p-8 border-b border-base-300 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10">
@@ -90,14 +90,14 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
             {/* Community Name */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold">
+              <label className="text-lg font-semibold">
                 Community Name
               </label>
   
               <input
                 type="text"
                 name="name"
-                className="input input-bordered w-full h-12 sm:h-14 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="input input-bordered w-full h-12 sm:h-14 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="e.g., Backend Developers India"
                 value={form.name}
                 onChange={handleChange}
@@ -108,7 +108,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
             {/* Description */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-semibold">
+                <label className="text-lg font-semibold">
                   Description
                 </label>
   
@@ -119,7 +119,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
               <textarea
                 name="description"
-                className="textarea textarea-bordered w-full rounded-2xl resize-none h-32 text-base"
+                className="textarea textarea-bordered w-full rounded-lg resize-none h-32 text-base"
                 placeholder="Describe your community..."
                 value={form.description}
                 onChange={handleChange}
@@ -132,13 +132,13 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
               {/* Category */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold">
+                <label className="text-lg font-semibold">
                   Category
                 </label>
   
                 <select
                   name="category"
-                  className="select select-bordered w-full h-12 sm:h-14 rounded-2xl"
+                  className="select select-bordered w-full h-12 sm:h-14 rounded-lg"
                   value={form.category}
                   onChange={handleChange}
                 >
@@ -155,14 +155,14 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
               {/* Cover Image */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold">
+                <label className="text-lg font-semibold">
                   Cover Image URL
                 </label>
   
                 <input
                   type="url"
                   name="coverImage"
-                  className="input input-bordered w-full h-12 sm:h-14 rounded-2xl"
+                  className="input input-bordered w-full h-12 sm:h-14 rounded-lg"
                   placeholder="https://..."
                   value={form.coverImage}
                   onChange={handleChange}
@@ -172,7 +172,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
             {/* Message Permissions */}
             <div className="space-y-4">
-              <label className="text-sm font-semibold">
+              <label className="text-lg font-semibold">
                 Group Chat Permissions
               </label>
   
@@ -180,7 +180,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
                 {/* All Members */}
                 <label
-                  className={`cursor-pointer rounded-2xl border p-5 transition-all duration-200 ${
+                  className={`cursor-pointer rounded-lg border p-5 transition-all duration-200 ${
                     form.messagePermission === "all"
                       ? "border-primary bg-primary/10"
                       : "border-base-300 hover:border-primary/40"
@@ -219,7 +219,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
                 {/* Admins Only */}
                 <label
-                  className={`cursor-pointer rounded-2xl border p-5 transition-all duration-200 ${
+                  className={`cursor-pointer rounded-lg border p-5 transition-all duration-200 ${
                     form.messagePermission === "admins_only"
                       ? "border-primary bg-primary/10"
                       : "border-base-300 hover:border-primary/40"
@@ -263,7 +263,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
             {/* Error */}
             {error && (
-              <div className="alert alert-error rounded-2xl">
+              <div className="text-black p-4 bg-red-700 rounded-lg">
                 <span>{error}</span>
               </div>
             )}
@@ -273,7 +273,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
               <button
                 type="button"
-                className="btn btn-ghost rounded-xl px-6"
+                className="btn btn-ghost rounded-md text-lg px-6"
                 onClick={onClose}
                 disabled={loading}
               >
@@ -282,7 +282,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
   
               <button
                 type="submit"
-                className="btn btn-primary rounded-xl px-8"
+                className="btn btn-primary text-lg rounded-md px-4"
                 disabled={loading}
               >
                 {loading ? (

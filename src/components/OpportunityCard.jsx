@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import OpportunityDetails from "./OpportunityDetail";
 import { useState } from "react";
+import DeveloperLink from "./DeveloperLink";
 
 // ── Static maps ───────────────────────────────────────────────────────────────
 const TYPE_META = {
@@ -56,7 +57,7 @@ export default function OpportunityCard({
 
         {/* ── Row 1: type badge + timestamp ──────────────────── */}
         <div className="flex items-center justify-between">
-          <span className={`badge ${typeMeta.badge} gap-1 capitalize font-medium`}>
+          <span className={`badge ${typeMeta.badge} gap-1 rounded-sm capitalize font-medium`}>
             {typeMeta.icon} {typeMeta.label}
           </span>
           <span className="text-xs text-base-content/40">{timeAgo(createdAt)}</span>
@@ -86,7 +87,7 @@ export default function OpportunityCard({
           {duration && <span>⏱ {duration}</span>}
           {teamSize && <span>👥 {teamSize} members</span>}
           {level && (
-            <span className={`badge ${LEVEL_BADGE[level] || "badge-ghost"} badge-sm capitalize font-semibold`}>
+            <span className={`badge ${LEVEL_BADGE[level] || "badge-ghost"} rounded-sm badge-sm capitalize font-semibold`}>
               {level}
             </span>
           )}
@@ -120,21 +121,25 @@ export default function OpportunityCard({
 
           {/* Poster info */}
           <div className="flex items-center gap-2 min-w-0">
-            <div className="avatar shrink-0">
-              <div className="w-7 rounded-full ring ring-base-300 ring-offset-base-100 ring-offset-1">
-                <img
-                  src={
-                    postedBy?.photoUrl ||
-                    "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  }
-                  alt={postedBy?.firstName || "User"}
-                />
+            <DeveloperLink userId={postedBy?._id}>
+              <div className="avatar shrink-0">
+                <div className="w-7 rounded-full ring ring-base-300 ring-offset-base-100 ring-offset-1">
+                  <img
+                    src={
+                      postedBy?.photoUrl ||
+                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    }
+                    alt={postedBy?.firstName || "User"}
+                  />
+                </div>
               </div>
-            </div>
+            </DeveloperLink>
             <div className="min-w-0">
-              <p className="text-xs font-semibold truncate leading-tight">
-                {postedBy?.firstName || "Unknown"} {postedBy?.lastName}
-              </p>
+              <DeveloperLink userId={postedBy?._id} className="hover:underline hover:text-primary transition-colors">
+                <p className="text-xs font-semibold truncate leading-tight">
+                  {postedBy?.firstName || "Unknown"} {postedBy?.lastName}
+                </p>
+              </DeveloperLink>
               {postedBy?.experienceLevel && (
                 <p className="text-[10px] text-base-content/40 capitalize">
                   {postedBy.experienceLevel}

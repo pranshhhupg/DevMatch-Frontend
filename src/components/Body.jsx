@@ -25,7 +25,7 @@ const Body = () => {
         }
 
         catch(err){
-            if(err.response?.status===401) navigate("/login");
+            navigate("/login");
             console.log(err.response.data);
         }
     }

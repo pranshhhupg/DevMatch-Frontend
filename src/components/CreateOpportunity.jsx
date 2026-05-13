@@ -181,218 +181,272 @@ export default function CreateOpportunity({ editData, onClose, onSuccess }) {
   };
 
   return (
-    <dialog ref={dialogRef} className="modal" onClose={onClose}>
-      <div className="modal-box w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto">
-
+    <dialog
+      ref={dialogRef}
+      className="modal backdrop-blur-sm"
+      onClose={onClose}
+    >
+      <div className="modal-box w-11/12 max-w-3xl max-h-[92vh] overflow-y-auto p-0 rounded-xl border border-base-300 shadow-2xl bg-base-100">
+  
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-bold text-xl">
-            {isEdit ? "Edit Opportunity" : "List an Opportunity"}
-          </h3>
+        <div className="sticky top-0 z-20 bg-base-100/90 backdrop-blur-md border-b border-base-300 px-7 py-5 flex items-center justify-between">
+          <div>
+            <h3 className="font-extrabold text-3xl">
+              {isEdit ? "Edit Opportunity" : "Create Opportunity"}
+            </h3>
+  
+            <p className="text-sm text-base-content/60 mt-1">
+              Find developers, teammates, co-founders, and collaborators
+            </p>
+          </div>
+  
           <button
-            className="btn btn-sm btn-circle btn-ghost"
+            className="btn btn-sm btn-circle btn-ghost hover:bg-red-700 hover:text-white"
             onClick={handleClose}
           >
             ✕
           </button>
         </div>
-
-        <div className="flex flex-col gap-5">
-
+  
+        {/* Body */}
+        <div className="p-7 flex flex-col gap-7">
+  
           {/* Title */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Title *</span>
+              <span className="label-text font-semibold text-base">
+                Opportunity Title
+              </span>
+  
               <span className="label-text-alt text-base-content/40">
                 {form.title.length}/100
               </span>
             </label>
+  
             <input
               type="text"
               value={form.title}
               onChange={(e) => set("title", e.target.value)}
-              placeholder="e.g. Looking for a co-founder for an EdTech startup"
-              className="input input-bordered w-full"
+              placeholder="Looking for frontend dev for AI SaaS startup..."
+              className="input input-bordered w-full rounded-lg h-14 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
               maxLength={100}
             />
           </div>
-
+  
           {/* Type + Level */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+  
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Type *</span>
+                <span className="label-text font-semibold">
+                  Opportunity Type
+                </span>
               </label>
+  
               <select
                 value={form.eventType}
                 onChange={(e) => set("eventType", e.target.value)}
-                className="select select-bordered w-full capitalize"
+                className="select select-bordered rounded-lg h-14 capitalize"
               >
                 {TYPES.map((t) => (
-                  <option key={t} value={t} className="capitalize">{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </div>
-
+  
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Level Required</span>
+                <span className="label-text font-semibold">
+                  Experience Level
+                </span>
               </label>
+  
               <select
                 value={form.level}
                 onChange={(e) => set("level", e.target.value)}
-                className="select select-bordered w-full capitalize"
+                className="select select-bordered rounded-lg h-14 capitalize"
               >
                 {LEVELS.map((l) => (
-                  <option key={l} value={l} className="capitalize">{l}</option>
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
-
+  
           {/* Location + Duration */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+  
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Location *</span>
+                <span className="label-text font-semibold">
+                  Location
+                </span>
               </label>
+  
               <input
                 type="text"
                 value={form.location}
                 onChange={(e) => set("location", e.target.value)}
-                placeholder="e.g. Mumbai, Delhi, Remote"
-                className="input input-bordered w-full"
+                placeholder="Remote / Delhi / Bangalore"
+                className="input input-bordered rounded-lg h-14"
               />
             </div>
-
+  
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Duration</span>
-                <span className="label-text-alt text-base-content/40">Optional</span>
+                <span className="label-text font-semibold">
+                  Duration
+                </span>
               </label>
+  
               <input
                 type="text"
                 value={form.duration}
                 onChange={(e) => set("duration", e.target.value)}
-                placeholder="e.g. 48 hours, 3 months"
-                className="input input-bordered w-full"
+                placeholder="48 hours / 2 months"
+                className="input input-bordered rounded-lg h-14"
               />
             </div>
           </div>
-
+  
           {/* Team Size */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Total Team Size</span>
-              <span className="label-text-alt text-base-content/40">Optional</span>
+              <span className="label-text font-semibold">
+                Team Size
+              </span>
             </label>
+  
             <input
               type="number"
               value={form.teamSize}
               onChange={(e) => set("teamSize", e.target.value)}
-              placeholder="How many members including you?"
-              className="input input-bordered w-full"
+              placeholder="Total members including you"
+              className="input input-bordered rounded-lg ml-4 h-14"
               min={1}
               max={100}
             />
           </div>
-
+  
           {/* Description */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Description *</span>
+              <span className="label-text font-semibold">
+                Description
+              </span>
+  
               <span className="label-text-alt text-base-content/40">
                 {form.description.length}/1000
               </span>
             </label>
+  
             <textarea
               value={form.description}
               onChange={(e) => set("description", e.target.value)}
-              placeholder="Describe the opportunity — what you're building, the problem you're solving, and what kind of people you're looking for…"
-              className="textarea textarea-bordered w-full resize-none"
-              rows={4}
+              placeholder="Explain the project, goals, expectations, timeline, and who you're looking for..."
+              className="textarea textarea-bordered rounded-lg w-full resize-none min-h-[160px] text-base leading-relaxed"
               maxLength={1000}
             />
           </div>
-
+  
           {/* Tech Stack */}
-          <TagInput
-            label="Tech Stack"
-            placeholder="e.g. React, Node.js, MongoDB…"
-            values={form.techStack}
-            onChange={(v) => set("techStack", v)}
-            suggestions={TECH_SUGGESTIONS}
-          />
-
-          {/* Roles Needed — checkbox badges */}
+          <div className="bg-base-200 rounded-lg p-3 border border-base-300">
+            <TagInput
+              label="Tech Stack"
+              placeholder="React, Node.js, MongoDB..."
+              values={form.techStack}
+              onChange={(v) => set("techStack", v)}
+              suggestions={TECH_SUGGESTIONS}
+            />
+          </div>
+  
+          {/* Roles Needed */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Roles Needed</span>
+              <span className="label-text font-semibold">
+                Roles Needed
+              </span>
             </label>
-            <div className="flex flex-wrap gap-2">
+  
+            <div className="flex flex-wrap gap-3 mt-1">
               {ROLE_OPTIONS.map((role) => {
                 const selected = form.rolesNeeded.includes(role);
+  
                 return (
-                  <label
+                  <button
+                    type="button"
                     key={role}
-                    className={`badge cursor-pointer select-none transition-all capitalize ${
-                      selected
-                        ? "badge-secondary"
-                        : "badge-ghost hover:badge-outline"
-                    }`}
+                    onClick={() => toggleRole(role)}
+                    className={`
+                      px-5 py-3 rounded-lg border text-sm transition-all duration-300 capitalize font-medium
+                      ${
+                        selected
+                          ? "bg-primary text-primary-content border-primary scale-105 shadow-lg"
+                          : "bg-base-200 border-base-300 hover:border-primary hover:cursor-pointer hover:scale-105"
+                      }
+                    `}
                   >
-                    <input
-                      type="checkbox"
-                      className="hidden"
-                      checked={selected}
-                      onChange={() => toggleRole(role)}
-                    />
                     {role}
-                  </label>
+                  </button>
                 );
               })}
             </div>
           </div>
-
-          {/* Apply / External link */}
+  
+          {/* Apply Link */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Apply / More Info Link</span>
-              <span className="label-text-alt text-base-content/40">Optional</span>
+              <span className="label-text font-semibold">
+                Apply Link
+              </span>
             </label>
+  
             <input
               type="url"
               value={form.applyLink}
               onChange={(e) => set("applyLink", e.target.value)}
               placeholder="https://devfolio.co/..."
-              className="input input-bordered w-full"
+              className="input input-bordered rounded-lg ml-2 h-14"
             />
           </div>
-
+  
           {/* Error */}
           {error && (
-            <div className="alert alert-error py-2 text-sm">
+            <div className="alert rounded-lg bg-red-700 shadow-md">
               <span>{error}</span>
             </div>
           )}
-
-          {/* Submit */}
-          <button
-            className={`btn btn-primary w-full ${saving ? "loading" : ""}`}
-            onClick={handleSubmit}
-            disabled={saving}
-          >
-            {saving
-              ? "Saving…"
-              : isEdit
-              ? "Update Opportunity"
-              : "Post Opportunity"}
-          </button>
+  
+          {/* Footer */}
+          <div className="sticky bottom-0 bg-base-100 pt-3">
+            <button
+              className={`
+                btn btn-primary w-full h-14 rounded-lg text-base font-bold
+                shadow-lg hover:scale-[1.01] transition-all
+                ${saving ? "loading" : ""}
+              `}
+              onClick={handleSubmit}
+              disabled={saving}
+            >
+              {saving
+                ? "Saving..."
+                : isEdit
+                ? "Update Opportunity"
+                : "Post Opportunity"}
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* Backdrop click closes modal */}
-      <div className="modal-backdrop" onClick={handleClose} />
+  
+      {/* Backdrop */}
+      <div
+        className="modal-backdrop bg-black/40 backdrop-blur-sm"
+        onClick={handleClose}
+      />
     </dialog>
   );
 }

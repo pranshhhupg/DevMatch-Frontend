@@ -74,7 +74,7 @@ export default function Profile() {
   if (!user) return null;
 
   const {
-    name, photoUrl, about, age, gender,
+    firstName, lastName, photoUrl, about, age, gender,
     skills = [], lookingFor = [], goals = [],
     availability, experienceLevel, timezone,
     hackathonInterest, startupInterest,
@@ -82,8 +82,14 @@ export default function Profile() {
   } = user;
 
   return (
-    <div className="max-w-xl mx-auto py-8 px-4 flex flex-col gap-6">
+    <div className="max-w-3xl mx-auto py-8 px-4 flex flex-col gap-6">
 
+      <button
+        className="btn btn-primary btn-md self-start"
+        onClick={() => navigate(-1)}
+      >
+         Back
+      </button>
       {/* ── Header Card ──────────────────────────────────────── */}
       <div className="card bg-base-200 shadow-md">
         <div className="card-body items-center text-center gap-3">
@@ -100,7 +106,7 @@ export default function Profile() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold">{name}</h1>
+            <h1 className="text-2xl font-bold">{firstName} {lastName}</h1>
             {(age || gender) && (
               <p className="text-sm text-base-content/50">
                 {[age && `${age} yrs`, gender].filter(Boolean).join(" · ")}
@@ -113,7 +119,7 @@ export default function Profile() {
           )}
 
           <Link to="/profile/edit" className="btn btn-primary btn-sm mt-1">
-            ✏️ Edit Profile
+             Edit your Profile
           </Link>
         </div>
       </div>
@@ -125,7 +131,7 @@ export default function Profile() {
 
           {experienceLevel && (
             <Row label="Experience">
-              <span className={`badge ${SCORE_BADGE[experienceLevel] || "badge-ghost"} capitalize`}>
+              <span className="badge badge-primary badge-sm capitalize font-semibold">
                 {experienceLevel}
               </span>
             </Row>
@@ -162,13 +168,13 @@ export default function Profile() {
 
           {availability && (
             <Row label="Availability">
-              <span className="badge badge-outline capitalize">{availability}</span>
+              <span className="badge badge-primary badge-sm font-semibold capitalize">{availability}</span>
             </Row>
           )}
 
           {timezone && (
             <Row label="Timezone">
-              <span className="text-sm text-base-content/70">{timezone}</span>
+              <span className="badge badge-primary badge-sm font-semibold text-base-content/70">{timezone}</span>
             </Row>
           )}
 
@@ -176,7 +182,7 @@ export default function Profile() {
             <Row label="Goals">
               <div className="flex flex-wrap gap-1">
                 {goals.map((g) => (
-                  <span key={g} className="badge badge-secondary badge-sm capitalize">{g}</span>
+                  <span key={g} className="badge badge-primary badge-sm font-semibold capitalize">{g}</span>
                 ))}
               </div>
             </Row>
@@ -185,10 +191,10 @@ export default function Profile() {
           <Row label="Interests">
             <div className="flex gap-2 flex-wrap">
               {hackathonInterest && (
-                <span className="badge badge-accent badge-sm">⚡ Hackathons</span>
+                <span className="badge badge-primary badge-sm font-semibold">Hackathons</span>
               )}
               {startupInterest && (
-                <span className="badge badge-accent badge-sm">🚀 Startups</span>
+                <span className="badge badge-primary badge-sm font-semibold">Startups</span>
               )}
               {!hackathonInterest && !startupInterest && (
                 <span className="text-sm text-base-content/40">—</span>
@@ -208,7 +214,7 @@ export default function Profile() {
               <Row label="Learning">
                 <div className="flex flex-wrap gap-1">
                   {learningGoals.map((g) => (
-                    <span key={g} className="badge badge-ghost badge-sm">{g}</span>
+                    <span key={g} className="badge outline outline-primary badge-sm">{g}</span>
                   ))}
                 </div>
               </Row>

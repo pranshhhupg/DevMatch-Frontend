@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
 import { BASE_URL } from "../utils/constants";
 import MatchBadge from "./MatchBadge";
+import DeveloperLink from "./DeveloperLink";
 
 /**
  * Receives a full feed item: { user, matchScore, matchReasons, matchBreakdown }
@@ -28,18 +29,19 @@ export default function UserCard({ feedItem }) {
   };
 
   return (
+    
     <div className="card bg-base-200 shadow-xl w-80 sm:w-96">
       {/* Photo */}
       <figure className="relative">
-        <img
-          src={photoUrl}
-          alt={`${firstName} ${lastName}`}
-          className="w-full h-60 hover:h-96 object-cover transition-all duration-500 ease-in-out"
-          onError={(e) => {
-            e.target.src =
-              "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
-          }}
-        />
+          <img
+            src={photoUrl}
+            alt={`${firstName} ${lastName}`}
+            className="w-full h-60 hover:h-96 object-cover transition-all duration-500 ease-in-out"
+            onError={(e) => {
+              e.target.src =
+                "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+            }}
+          />
         {/* Experience badge overlay */}
         {experienceLevel && (
           <span className="absolute top-2 right-2 badge badge-neutral capitalize text-xs">
@@ -47,14 +49,17 @@ export default function UserCard({ feedItem }) {
           </span>
         )}
       </figure>
-
+      
       <div className="card-body p-4 gap-2">
+      <DeveloperLink userId={_id}>
         {/* Name + meta */}
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h2 className="card-title text-base-content text-lg leading-tight">
-              {firstName} {lastName}
-            </h2>
+            <DeveloperLink userId={_id} className="hover:underline hover:text-primary transition-colors">
+              <h2 className="card-title text-base-content text-lg leading-tight">
+                {firstName} {lastName}
+              </h2>
+            </DeveloperLink>
             {(age || gender) && (
               <p className="text-xs text-base-content/50 mt-0.5">
                 {[age && `${age}y`, gender].filter(Boolean).join(" · ")}
@@ -70,19 +75,19 @@ export default function UserCard({ feedItem }) {
 
         {/* About */}
         {about && (
-          <p className="text-sm text-base-content/70 line-clamp-2">{about}</p>
+          <p className="text-xs text-base-content/70 line-clamp-2">{about}</p>
         )}
 
         {/* Skills */}
         {skills.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
+          <div className="flex flex-wrap gap-1 my-2">
             {skills.slice(0, 5).map((skill) => (
-              <span key={skill} className="badge badge-primary badge-sm text-xs font-medium">
+              <span key={skill} className="badge badge-primary rounded-md badge-sm text-xs font-medium">
                 {skill}
               </span>
             ))}
             {skills.length > 5 && (
-              <span className="badge badge-ghost badge-sm text-xs">
+              <span className="badge outline outline-primary rounded-md badge-sm text-xs">
                 +{skills.length - 5}
               </span>
             )}
@@ -99,6 +104,7 @@ export default function UserCard({ feedItem }) {
           </p>
         )}
 
+
         {/* Match Badge */}
         <MatchBadge
           score={matchScore}
@@ -107,6 +113,7 @@ export default function UserCard({ feedItem }) {
           rawBreakdown={rawBreakdown}
         />
 
+        </DeveloperLink>
         {/* Action buttons */}
         <div className="card-actions justify-between mt-2 gap-2">
           <button
@@ -124,5 +131,6 @@ export default function UserCard({ feedItem }) {
         </div>
       </div>
     </div>
+
   );
 }

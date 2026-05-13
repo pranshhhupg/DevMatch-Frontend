@@ -42,7 +42,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto">
       <div className="min-h-screen flex items-center justify-center p-3 sm:p-6">
   
-        <div className="w-full max-w-2xl bg-base-100 rounded-3xl border border-base-300 shadow-[0_20px_60px_rgba(0,0,0,0.45)] overflow-hidden">
+        <div className="w-full max-w-2xl bg-base-100 rounded-xl border border-base-300 shadow-[0_20px_60px_rgba(0,0,0,0.45)] overflow-hidden">
   
           {/* Header */}
           <div className="relative p-5 sm:p-8 border-b border-base-300 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10">
@@ -86,7 +86,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
               <input
                 type="text"
                 name="title"
-                className="input input-bordered w-full h-12 sm:h-14 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="input input-bordered w-full h-12 sm:h-14 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="Give your post a title..."
                 value={form.title}
                 onChange={handleChange}
@@ -108,7 +108,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
   
               <textarea
                 name="content"
-                className="textarea textarea-bordered w-full rounded-2xl resize-none h-40 text-base leading-relaxed"
+                className="textarea textarea-bordered w-full rounded-xl resize-none h-40 text-base leading-relaxed"
                 placeholder="Share something valuable with the community..."
                 value={form.content}
                 onChange={handleChange}
@@ -124,14 +124,14 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
                 </label>
   
                 <span className="text-xs text-base-content/50">
-                  comma separated
+                  Comma separated(Node, Express etc.)
                 </span>
               </div>
   
               <input
                 type="text"
                 name="tags"
-                className="input input-bordered w-full h-12 sm:h-14 rounded-2xl"
+                className="input input-bordered w-full h-12 sm:h-14 rounded-xl"
                 placeholder="e.g. leetcode, arrays, ai, startup"
                 value={form.tags}
                 onChange={handleChange}
@@ -148,7 +148,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
                     .map((tag, index) => (
                       <div
                         key={index}
-                        className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium"
+                        className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm font-medium"
                       >
                         #{tag}
                       </div>
@@ -159,7 +159,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
   
             {/* Error */}
             {error && (
-              <div className="alert alert-error rounded-2xl">
+              <div className="alert alert-error rounded-xl">
                 <span>{error}</span>
               </div>
             )}
@@ -169,7 +169,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
   
               <button
                 type="button"
-                className="btn btn-ghost rounded-xl px-6"
+                className="btn btn-ghost rounded-lg text-lg px-6"
                 onClick={onClose}
                 disabled={loading}
               >
@@ -178,7 +178,7 @@ export default function CreatePostModal({ communityId, onClose, onCreated }) {
   
               <button
                 type="submit"
-                className="btn btn-primary rounded-xl px-8"
+                className="btn btn-primary rounded-lg text-lg px-4"
                 disabled={loading}
               >
                 {loading ? (

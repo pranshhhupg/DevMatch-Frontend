@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
+import DeveloperLink from "../DeveloperLink";
 
 export default function MemberManagement({ community, onUpdate }) {
   const [loading, setLoading] = useState({});
@@ -104,168 +105,267 @@ export default function MemberManagement({ community, onUpdate }) {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7 p-4 md:p-6">
+  
       {/* Toast */}
       {toast && (
-        <div className="alert alert-success py-2 text-sm">
+        <div className="alert alert-success shadow-lg rounded-2xl">
           <span>{toast}</span>
         </div>
       )}
-
-      {/* Message Permission Panel */}
-      <div className="card bg-base-100 border border-base-300 shadow p-5">
-        <h3 className="font-bold text-base mb-3">💬 Group Chat Permissions</h3>
-        <p className="text-sm text-base-content/60 mb-4">
-          Control who can send messages in the group chat.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            className={`btn flex-1 gap-2 ${
-              permission === "all" ? "btn-primary" : "btn-outline"
-            }`}
-            onClick={() => handlePermissionChange("all")}
-            disabled={permLoading || permission === "all"}
-          >
-            🌐 All Members
-          </button>
-          <button
-            className={`btn flex-1 gap-2 ${
-              permission === "admins_only" ? "btn-primary" : "btn-outline"
-            }`}
-            onClick={() => handlePermissionChange("admins_only")}
-            disabled={permLoading || permission === "admins_only"}
-          >
-            🔒 Admins Only
-          </button>
-        </div>
-        <p className="text-xs text-base-content/40 mt-2">
-          Current:{" "}
-          <strong>
-            {permission === "admins_only" ? "Admins Only" : "All Members"}
-          </strong>
-        </p>
-      </div>
-
-      {/* Members List */}
-      <div className="card bg-base-100 border border-base-300 shadow p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-base">
-            👥 Members ({community.members?.length || 0})
-          </h3>
-          <input
-            type="text"
-            className="input input-bordered input-sm w-44"
-            placeholder="Search members..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-          {filteredMembers.length === 0 && (
-            <p className="text-center text-base-content/40 py-8">
-              No members found
+  
+      {/* Permission Settings */}
+      <div className="bg-base-100 border border-base-300 rounded-xl shadow-md p-6">
+  
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+  
+          <div>
+            <h2 className="text-xl font-bold">
+               Group Chat Permissions
+            </h2>
+  
+            <p className="text-sm text-base-content/60">
+              Control who can participate in community discussions.
             </p>
+          </div>
+  
+          <div className="flex gap-3">
+  
+            <button
+              className={`btn rounded-lg px-6 ${
+                permission === "all"
+                  ? "btn-primary"
+                  : "btn-outline"
+              }`}
+              onClick={() => handlePermissionChange("all")}
+              disabled={permLoading || permission === "all"}
+            >
+              All Members
+            </button>
+  
+            <button
+              className={`btn rounded-lg px-6 ${
+                permission === "admins_only"
+                  ? "btn-primary"
+                  : "btn-primary btn-outline"
+              }`}
+              onClick={() =>
+                handlePermissionChange("admins_only")
+              }
+              disabled={
+                permLoading ||
+                permission === "admins_only"
+              }
+            >
+              Admins Only
+            </button>
+          </div>
+        </div>
+  
+        <div className="mt-4 text-sm text-base-content/50">
+          Current Permission:
+          <span className="font-semibold ml-2">
+            {permission === "admins_only"
+              ? "Admins Only"
+              : "All Members"}
+          </span>
+        </div>
+      </div>
+  
+      {/* Members */}
+      <div className="bg-base-100 border border-base-300 rounded-xl shadow-md overflow-hidden">
+  
+        {/* Header */}
+        <div className="p-6 border-b border-base-300">
+  
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  
+            <div>
+              <h2 className="text-xl font-bold">
+                Community Members
+              </h2>
+  
+              <p className="text-sm text-base-content/60 ">
+                Manage admins, permissions, and members.
+              </p>
+            </div>
+  
+            {/* Search */}
+            <input
+              type="text"
+              className="input input-bordered rounded-lg w-full md:w-72"
+              placeholder="Search members..."
+              value={search}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
+            />
+          </div>
+        </div>
+  
+        {/* Members List */}
+        <div className="max-h-[70vh] overflow-y-auto p-4 space-y-3">
+  
+          {filteredMembers.length === 0 && (
+            <div className="py-16 text-center">
+  
+              <div className="text-5xl mb-3">
+                🔍
+              </div>
+  
+              <h3 className="text-xl font-semibold">
+                No members found
+              </h3>
+  
+              <p className="text-base-content/50 mt-2">
+                Try searching with another name.
+              </p>
+            </div>
           )}
-
+  
           {filteredMembers.map((member) => {
             const memberId = member._id || member;
+  
             const admin = isAdmin(memberId);
+  
             const creator = isCreator(memberId);
-            const memberLoading = loading[memberId];
-
+  
+            const memberLoading =
+              loading[memberId];
+  
             return (
               <div
                 key={memberId}
-                className="flex items-center justify-between p-3 rounded-xl bg-base-200 hover:bg-base-300 transition"
+                className="bg-base-200 hover:bg-base-300 transition-all duration-200 rounded-xl p-4 border border-transparent hover:border-base-300"
               >
-                {/* Member info */}
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full">
-                      <img
-                        src={
-                          member.photoUrl ||
-                          "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
-                        }
-                        alt="avatar"
-                      />
+  
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+  
+                  {/* LEFT */}
+                  <DeveloperLink userId={memberId}>
+                  <div className="flex items-center gap-4">
+  
+                    {/* Avatar */}
+                    
+                      <div className="avatar cursor-pointer">
+  
+                        <div className="w-12 rounded-xl  ring-primary/20 ring-offset-2 ring-offset-base-100">
+  
+                          <img
+                            src={
+                              member.photoUrl ||
+                              "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
+                            }
+                            alt="avatar"
+                            className="object-cover"
+                          />
+                        </div>
+                      </div>
+                    
+  
+                    {/* Info */}
+                    <div>
+  
+                      <DeveloperLink
+                        userId={memberId}
+                        className="hover:text-primary transition-colors"
+                      >
+                        <h3 className="font-bold text-md">
+                          {member.firstName}{" "}
+                          {member.lastName}
+                        </h3>
+                      </DeveloperLink>
+  
+                      <div className="flex flex-wrap gap-2 mt-2">
+  
+                        {creator && (
+                          <span className="badge badge-accent badge-md font-medium">
+                             Creator
+                          </span>
+                        )}
+  
+                        {admin && !creator && (
+                          <span className="badge badge-info badge-md font-medium">
+                             Admin
+                          </span>
+                        )}
+  
+                        {member.experienceLevel && (
+                          <span className="badge badge-outline badge-md capitalize">
+                            {member.experienceLevel}
+                          </span>
+                        )}
+                      </div>
+  
+                      {member.about && (
+                        <p className="text-sm text-base-content/60 mt-2 line-clamp-2 max-w-xl">
+                          {member.about}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-sm">
-                      {member.firstName} {member.lastName}
-                    </p>
-                    <div className="flex gap-1 mt-0.5">
-                      {creator && (
-                        <span className="badge badge-warning badge-xs">
-                          Creator
-                        </span>
-                      )}
-                      {admin && !creator && (
-                        <span className="badge badge-info badge-xs">
-                          Admin
-                        </span>
-                      )}
-                      {member.experienceLevel && (
-                        <span className="badge badge-ghost badge-xs capitalize">
-                          {member.experienceLevel}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions — don't show for creator */}
-                {!creator && (
-                  <div className="flex gap-2">
-                    {admin ? (
-                      /* Demote (only creator can demote) */
-                      isCreator(
-                        community.createdBy?._id || community.createdBy
-                      ) ? (
+                  </DeveloperLink>
+                  {/* RIGHT ACTIONS */}
+                  {!creator && (
+                    <div className="flex flex-wrap gap-2">
+  
+                      {admin ? (
+                        isCreator(
+                          community.createdBy?._id ||
+                            community.createdBy
+                        ) ? (
+                          <button
+                            className="btn btn-warning btn-sm rounded-lg"
+                            onClick={() =>
+                              handleDemote(memberId)
+                            }
+                            disabled={!!memberLoading}
+                          >
+                            {memberLoading ===
+                            "demoting" ? (
+                              <span className="loading loading-spinner loading-xs" />
+                            ) : (
+                              "Demote"
+                            )}
+                          </button>
+                        ) : null
+                      ) : (
                         <button
-                          className="btn btn-xs btn-warning"
-                          onClick={() => handleDemote(memberId)}
+                          className="btn btn-success btn-outline btn-sm rounded-lg"
+                          onClick={() =>
+                            handlePromote(memberId)
+                          }
                           disabled={!!memberLoading}
                         >
-                          {memberLoading === "demoting" ? (
+                          {memberLoading ===
+                          "promoting" ? (
                             <span className="loading loading-spinner loading-xs" />
                           ) : (
-                            "Demote"
+                            "Promote"
                           )}
                         </button>
-                      ) : null
-                    ) : (
-                      /* Promote */
+                      )}
+  
                       <button
-                        className="btn btn-xs btn-success"
-                        onClick={() => handlePromote(memberId)}
+                        className="btn btn-error btn-outline btn-sm rounded-lg"
+                        onClick={() =>
+                          handleRemove(memberId)
+                        }
                         disabled={!!memberLoading}
                       >
-                        {memberLoading === "promoting" ? (
+                        {memberLoading ===
+                        "removing" ? (
                           <span className="loading loading-spinner loading-xs" />
                         ) : (
-                          "Promote"
+                          "Remove"
                         )}
                       </button>
-                    )}
-
-                    {/* Remove */}
-                    <button
-                      className="btn btn-xs btn-error btn-outline"
-                      onClick={() => handleRemove(memberId)}
-                      disabled={!!memberLoading}
-                    >
-                      {memberLoading === "removing" ? (
-                        <span className="loading loading-spinner loading-xs" />
-                      ) : (
-                        "Remove"
-                      )}
-                    </button>
-                  </div>
-                )}
+                    </div>
+                  )}
+                  
+                </div>
               </div>
+            
             );
           })}
         </div>

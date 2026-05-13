@@ -117,52 +117,74 @@ export default function CommunityList() {
           </p>
         </div>
         <button
-          className="btn btn-primary gap-2"
+          className="btn btn-primary gap-2 text-lg"
           onClick={() => setShowCreate(true)}
         >
-          <span className="text-lg">+</span> Create Community
+          <span className="text-xl">+</span> Create Community
         </button>
       </div>
 
       {/* Search + Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <form onSubmit={handleSearch} className="flex-1 flex gap-2">
-          <input
-            type="text"
-            className="input input-bordered flex-1"
-            placeholder="Search communities..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <button type="submit" className="btn btn-primary">
-            Search
-          </button>
-          {search && (
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => {
-                setSearch("");
-                setSearchInput("");
-              }}
-            >
-              ✕
-            </button>
-          )}
-        </form>
+      {/* Search + Filter Bar */}
+  <div className="bg-base-300 rounded-lg p-2 md:p-4 mb-6 border border-base-200">
 
-        <select
-          className="select select-bordered w-full sm:w-56"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+    <div className="flex flex-col sm:flex-row gap-3">
+
+      {/* Search */}
+      <form
+        onSubmit={handleSearch}
+        className="flex-1 flex gap-2"
+      >
+        <input
+          type="text"
+          className="input input-bordered flex-1 rounded-sm"
+          placeholder="Search communities..."
+          value={searchInput}
+          onChange={(e) =>
+            setSearchInput(e.target.value)
+          }
+        />
+
+        <button
+          type="submit"
+          className="btn btn-primary text-md rounded-sm px-6"
         >
-          {CATEGORIES.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </div>
+          Search
+        </button>
+
+        {search && (
+          <button
+            type="button"
+            className="btn btn-ghost rounded-lg"
+            onClick={() => {
+              setSearch("");
+              setSearchInput("");
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </form>
+
+      {/* Filter */}
+      <select
+        className="select select-bordered rounded-lg w-full sm:w-64"
+        value={category}
+        onChange={(e) =>
+          setCategory(e.target.value)
+        }
+      >
+        {CATEGORIES.map((c) => (
+          <option
+            key={c.value}
+            value={c.value}
+          >
+            {c.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
 
       {/* Active filters */}
       {(search || category) && (
@@ -270,47 +292,46 @@ export default function CommunityList() {
 
 // ── Community Card ─────────────────────────────────────────────────────────────
 function CommunityCard({ community, onClick }) {
-  const icon = CATEGORY_ICONS[community.category] || "💬";
   const categoryLabel =
     CATEGORIES.find((c) => c.value === community.category)?.label ||
     community.category;
 
   return (
     <div
-      className="card bg-base-100 border border-base-300 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+      className="card bg-base-300 border border-base-300 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
       onClick={onClick}
     >
       {/* Cover image or gradient */}
       <div
-        className="h-40 rounded-t-lg flex items-center justify-center text-4xl"
+        className="h-40 rounded-t-md flex items-center justify-center text-4xl"
         style={{
           background: community.coverImage
             ? `url(${community.coverImage}) center/cover`
             : "linear-gradient(135deg, var(--p) 0%, var(--s) 100%)",
         }}
       >
-        {!community.coverImage && icon}
+        {!community.coverImage }
       </div>
 
       <div className="card-body p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="card-title text-base font-bold leading-tight line-clamp-2">
+          <h3 className="card-title text-xl font-bold leading-tight line-clamp-2">
             {community.name}
           </h3>
           {community.isMember && (
-            <span className="badge badge-success badge-sm shrink-0">
+            <span className="badge badge-primary badge-outline font-semibold rounded-sm mt-1 badge-sm shrink-0">
               Joined
             </span>
           )}
         </div>
 
-        <p className="text-sm text-base-content/60 line-clamp-2 mt-1">
+        <p className="text-sm text-base-content/60 line-clamp-2 mb-4">
           {community.description}
         </p>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="badge badge-outline badge-sm">
-            {icon} {categoryLabel}
+          <span className="badge badge-primary rounded-sm font-semibold badge-sm">
+            {categoryLabel}
           </span>
           <span className="text-xs text-base-content/50">
             👥 {community.members?.length ?? community.memberCount ?? 0} members

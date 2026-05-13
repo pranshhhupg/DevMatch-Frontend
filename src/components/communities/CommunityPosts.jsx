@@ -101,9 +101,9 @@ export default function CommunityPosts({ community }) {
   };
 
   return (
-    <div>
+    <div className="p-4 md:p-6">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-5">
+      <div className="flex pt-2 flex-col sm:flex-row gap-3 mb-5">
         {/* Search */}
         <form onSubmit={handleSearchSubmit} className="flex-1 flex gap-2">
           <input
@@ -114,7 +114,7 @@ export default function CommunityPosts({ community }) {
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <button type="submit" className="btn btn-primary">
-            🔍
+            Search
           </button>
           {search && (
             <button

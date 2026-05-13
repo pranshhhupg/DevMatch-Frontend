@@ -166,251 +166,255 @@ export default function CommunityDetail() {
     CATEGORY_LABELS[community.category] ||
     community.category;
 
-  return (
-    <>
-      <div className="max-w-5xl mx-auto px-4 py-6">
-
-        {/* Back */}
-        <button
-          className="btn btn-ghost btn-sm mb-4 gap-1"
-          onClick={() =>
-            navigate("/communities")
-          }
-        >
-          ← Communities
-        </button>
-
-        {/* Community Header */}
-        <div className="card bg-base-100 border border-base-300 shadow-lg mb-6 overflow-hidden">
-
-
-          {/* Content */}
-          <div className="p-5">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-
-              {/* Left */}
-              <div className="flex-1">
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-2xl font-bold">
-                    {community.name}
-                  </h1>
-
-                  {community.isAdmin && (
-                    <span className="badge badge-warning badge-sm">
-                      Admin
-                    </span>
-                  )}
-
-                  {community.isMember &&
-                    !community.isAdmin && (
-                      <span className="badge badge-success badge-sm">
-                        Member
-                      </span>
-                    )}
-                </div>
-
-                <p className="text-base-content/60 mt-1 leading-relaxed">
-                  {community.description}
-                </p>
-
-                {/* Meta */}
-                <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-base-content/50">
-
-                  <span>
-                    {icon} {categoryLabel}
-                  </span>
-
-                  <span>
-                    👥{" "}
-                    {community.members?.length || 0}{" "}
-                    members
-                  </span>
-
-                  <span>
-                    📅 Created{" "}
-                    {new Date(
-                      community.createdAt
-                    ).toLocaleDateString(
-                      "en-IN",
-                      {
-                        month: "short",
-                        year: "numeric",
-                      }
-                    )}
-                  </span>
-
-                  <span>
-                    💬{" "}
+    return (
+      <>
+        <div className="max-w-6xl mx-auto px-4 py-6">
+    
+          {/* Back Button */}
+          <button
+            className="btn btn-primary btn-sm text-lg mb-5 rounded-lg"
+            onClick={() => navigate("/communities")}
+          >
+            ← Back to Communities
+          </button>
+    
+          {/* Community Hero */}
+          <div className="relative overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-xl mb-8">
+    
+            {/* Banner */}
+            <div className="h-40 md:h-52 w-full overflow-hidden">
+              <img
+                src={community.coverImage}
+                alt="community"
+                className="w-full h-full object-cover"
+              />
+            </div>
+    
+            {/* Content */}
+            <div className="p-6 bg-base-300">
+    
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+    
+                {/* LEFT */}
+                <div className="flex-1">
+    
+                  {/* Avatar + Name */}
+                  <div className="flex items-start gap-4">
+  
+                    <div>
+    
+                      <div className="flex flex-wrap items-center gap-2">
+    
+                        <h1 className="text-2xl font-bold">
+                          {community.name}
+                        </h1>
+    
+                        {community.isAdmin && (
+                          <span className="badge badge-primary badge-outline ml-2 mt-1 badge-lg font-semibold">
+                            Admin
+                          </span>
+                        )}
+    
+                        {community.isMember &&
+                          !community.isAdmin && (
+                            <span className="badge badge-primary badge-outline ml-2 mt-1 badge-lg font-semibold">
+                              Member
+                            </span>
+                          )}
+                      </div>
+    
+                      <div className="flex flex-wrap gap-3 mt-3 text-sm text-base-content/60">
+    
+                        <span className="badge badge-primary text-black font-semibold gap-1 px-3 py-3">
+                          {icon} {categoryLabel}
+                        </span>
+    
+                        <span className="badge badge-primary text-black font-semibold gap-1 px-3 py-3">
+                          👥 {community.members?.length || 0} Members
+                        </span>
+    
+                        <span className="badge badge-primary text-black font-semibold gap-1 px-3 py-3">
+                          📅{" "}
+                          {new Date(
+                            community.createdAt
+                          ).toLocaleDateString("en-IN", {
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+    
+                  {/* Description */}
+                  <p className="mt-5 opacity-70 text-base-content/70 leading-relaxed text-[15px]">
+                    {community.description}
+                  </p>
+    
+                  {/* Message Permission */}
+                  <div className="mt-4 text-sm text-base-content/50">
                     {community.messagePermission ===
                     "admins_only"
-                      ? "Admins can message"
-                      : "Open messaging"}
-                  </span>
+                      ? "🔒 Only admins can send messages"
+                      : "💬 Open community discussions enabled"}
+                  </div>
+                </div>
+    
+                {/* RIGHT ACTIONS */}
+                <div className="flex flex-row lg:flex-col gap-3">
+    
+                  {community.isAdmin && (
+                    <button
+                      className="btn btn-primary rounded-md btn-sm text-lg px-6"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      Edit
+                    </button>
+                  )}
+    
+                  {community.isMember ? (
+                    <button
+                      className="btn bg-red-800 pb-1 hover:bg-red-900 rounded-md btn-sm text-lg px-6"
+                      onClick={handleJoinLeave}
+                      disabled={
+                        joining ||
+                        community.createdBy?._id ===
+                          loggedInUser?._id ||
+                        community.createdBy ===
+                          loggedInUser?._id
+                      }
+                    >
+                      {joining ? (
+                        <span className="loading loading-spinner loading-sm" />
+                      ) : (
+                        "Leave"
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-primary rounded-md btn-sm text-lg px-6"
+                      onClick={handleJoinLeave}
+                      disabled={joining}
+                    >
+                      {joining ? (
+                        <span className="loading loading-spinner loading-sm" />
+                      ) : (
+                        "Join Community"
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
-
-              {/* Right Buttons */}
-              <div className="flex flex-wrap gap-2">
-
-                {/* Edit */}
+            </div>
+          </div>
+    
+          {/* Member Content */}
+          {community.isMember ? (
+            <>
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-3 mb-7">
+    
+                <button
+                  className={`btn rounded-lg text-md ${
+                    activeTab === "posts"
+                      ? "btn-primary"
+                      : "btn-ghost border bg-base-300"
+                  }`}
+                  onClick={() => setActiveTab("posts")}
+                >
+                  Posts
+                </button>
+    
+                <button
+                  className={`btn rounded-lg text-md ${
+                    activeTab === "chat"
+                      ? "btn-primary"
+                      : "btn-ghost border bg-base-300"
+                  }`}
+                  onClick={() => setActiveTab("chat")}
+                >
+                   Group Chat
+                </button>
+    
                 {community.isAdmin && (
                   <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() =>
-                      setShowEditModal(true)
-                    }
+                    className={`btn rounded-lg text-md ${
+                      activeTab === "members"
+                        ? "btn-primary"
+                        : "btn-ghost border bg-base-300"
+                    }`}
+                    onClick={() => setActiveTab("members")}
                   >
-                    ✏️ Edit
-                  </button>
-                )}
-
-                {/* Join / Leave */}
-                {community.isMember ? (
-                  <button
-                    className="btn btn-outline btn-sm"
-                    onClick={handleJoinLeave}
-                    disabled={
-                      joining ||
-                      community.createdBy?._id ===
-                        loggedInUser?._id ||
-                      community.createdBy ===
-                        loggedInUser?._id
-                    }
-                  >
-                    {joining ? (
-                      <span className="loading loading-spinner loading-xs" />
-                    ) : (
-                      "Leave"
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-primary btn-sm"
-                    onClick={handleJoinLeave}
-                    disabled={joining}
-                  >
-                    {joining ? (
-                      <span className="loading loading-spinner loading-xs" />
-                    ) : (
-                      "Join Community"
-                    )}
+                     Manage Members
                   </button>
                 )}
               </div>
+    
+              {/* Tab Content */}
+              <div className="bg-base-300 border border-base-300 rounded-xl shadow-md">
+    
+                {activeTab === "posts" && (
+                  <CommunityPosts
+                    community={community}
+                    onUpdate={fetchCommunity}
+                  />
+                )}
+    
+                {activeTab === "chat" && (
+                  <CommunityGroupChat
+                    community={community}
+                  />
+                )}
+    
+                {activeTab === "members" &&
+                  community.isAdmin && (
+                    <MemberManagement
+                      community={community}
+                      onUpdate={fetchCommunity}
+                    />
+                  )}
+              </div>
+            </>
+          ) : (
+            <div className=" bg-base-300 rounded-xl py-20 px-6 text-center">
+    
+              <div className="text-6xl mb-5">
+                🔒
+              </div>
+    
+              <h2 className="text-3xl font-bold mb-3">
+                Members Only Community
+              </h2>
+    
+              <p className="text-base-content/60 max-w-lg mx-auto leading-relaxed">
+                Join this community to participate in discussions,
+                access group chat, explore posts, and collaborate
+                with other developers.
+              </p>
+    
+              <button
+                className="btn btn-primary rounded-2xl mt-8 px-8"
+                onClick={handleJoinLeave}
+                disabled={joining}
+              >
+                {joining ? (
+                  <span className="loading loading-spinner loading-sm" />
+                ) : (
+                  "Join Community"
+                )}
+              </button>
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Tabs */}
-        {community.isMember ? (
-          <>
-            <div className="tabs tabs-boxed mb-6 overflow-x-auto">
-
-              <button
-                className={`tab gap-2 ${
-                  activeTab === "posts"
-                    ? "tab-active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setActiveTab("posts")
-                }
-              >
-                📝 Community Posts
-              </button>
-
-              <button
-                className={`tab gap-2 ${
-                  activeTab === "chat"
-                    ? "tab-active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setActiveTab("chat")
-                }
-              >
-                💬 Group Chat
-              </button>
-
-              {community.isAdmin && (
-                <button
-                  className={`tab gap-2 ${
-                    activeTab === "members"
-                      ? "tab-active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setActiveTab("members")
-                  }
-                >
-                  👥 Manage Members
-                </button>
-              )}
-            </div>
-
-            {activeTab === "posts" && (
-              <CommunityPosts
-                community={community}
-                onUpdate={fetchCommunity}
-              />
-            )}
-
-            {activeTab === "chat" && (
-              <CommunityGroupChat
-                community={community}
-              />
-            )}
-
-            {activeTab === "members" &&
-              community.isAdmin && (
-                <MemberManagement
-                  community={community}
-                  onUpdate={fetchCommunity}
-                />
-              )}
-          </>
-        ) : (
-          <div className="text-center py-16 bg-base-200 rounded-2xl">
-
-            <div className="text-5xl mb-4">
-              🔒
-            </div>
-
-            <h3 className="text-xl font-semibold mb-2">
-              Members-Only Content
-            </h3>
-
-            <p className="text-base-content/50 mb-6">
-              Join this community to see posts
-              and participate in discussions
-            </p>
-
-            <button
-              className="btn btn-primary"
-              onClick={handleJoinLeave}
-              disabled={joining}
-            >
-              {joining ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                "Join Community"
-              )}
-            </button>
-          </div>
+    
+        {/* Edit Modal */}
+        {showEditModal && (
+          <CommunityEditModal
+            community={community}
+            onClose={() => setShowEditModal(false)}
+            onUpdated={handleCommunityUpdated}
+          />
         )}
-      </div>
-
-      {/* Edit Modal */}
-      {showEditModal && (
-        <CommunityEditModal
-          community={community}
-          onClose={() =>
-            setShowEditModal(false)
-          }
-          onUpdated={handleCommunityUpdated}
-        />
-      )}
-    </>
-  );
+      </>
+    );
 }

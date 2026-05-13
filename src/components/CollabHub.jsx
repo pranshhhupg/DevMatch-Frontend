@@ -246,7 +246,7 @@ export default function CollabHub() {
           <p className="text-base-content/50 text-sm mt-2">
             Try different filters, or be the first to post!
           </p>
-          <button className="btn btn-primary btn-sm mt-6" onClick={handleOpenCreate}>
+          <button className="btn btn-primary mt-6" onClick={handleOpenCreate}>
             + List an Opportunity
           </button>
         </div>

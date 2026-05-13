@@ -133,12 +133,12 @@ export default function CommunityGroupChat({ community }) {
       {/* Chat header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-base-300 bg-base-200">
         <div>
-          <h3 className="font-bold">{community.name} — Group Chat</h3>
-          <p className="text-xs text-base-content/50">
+          <h3 className="font-bold text-xl">{community.name} - Group Chat</h3>
+          <p className="text-sm text-base-content/50">
             {community.members?.length || 0} members ·{" "}
             {community.messagePermission === "admins_only"
               ? "🔒 Admins only can send"
-              : "🌐 Open messaging"}
+              : "Open messaging"}
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
+import ResumeParser from "./ResumeParser";
 
 // ── Static option lists ────────────────────────────────────────────────────────
 const SKILL_SUGGESTIONS = [
@@ -126,8 +127,8 @@ export default function EditProfile() {
   const dispatch = useDispatch();
 
   const [form, setForm] = useState({
-    firstName:              user?.firstName              || "",
-    lastName:              user?.lastName              || "",
+    firstName:         user?.firstName         || "",
+    lastName:          user?.lastName          || "",
     photoUrl:          user?.photoUrl          || "",
     age:               user?.age               || "",
     gender:            user?.gender            || "",
@@ -144,8 +145,9 @@ export default function EditProfile() {
     projectIdeas:      user?.projectIdeas      || [],
   });
 
-  const [saving,  setSaving ] = useState(false);
-  const [toast,   setToast  ] = useState(null); // { type: "success"|"error", msg }
+  const [saving,           setSaving          ] = useState(false);
+  const [toast,            setToast           ] = useState(null); // { type: "success"|"error", msg }
+  const [showResumeParser, setShowResumeParser] = useState(false); // ← AI resume modal
 
   const set = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
 
@@ -159,7 +161,31 @@ export default function EditProfile() {
     setToast({ type, msg });
     setTimeout(() => setToast(null), 3500);
   };
-  
+
+  // ── Apply AI-extracted resume data to the form ───────────────────────────
+  const handleResumeApply = (parsedData) => {
+    setForm((prev) => ({
+      ...prev,
+      ...(parsedData.firstName                && { firstName:        parsedData.firstName        }),
+      ...(parsedData.lastName                 && { lastName:         parsedData.lastName         }),
+      ...(parsedData.age                      && { age:              parsedData.age              }),
+      ...(parsedData.gender                   && { gender:           parsedData.gender           }),
+      ...(parsedData.about                    && { about:            parsedData.about            }),
+      ...(parsedData.skills?.length           && { skills:           parsedData.skills           }),
+      ...(parsedData.lookingFor?.length       && { lookingFor:       parsedData.lookingFor       }),
+      ...(parsedData.goals?.length            && { goals:            parsedData.goals            }),
+      ...(parsedData.availability             && { availability:     parsedData.availability     }),
+      ...(parsedData.experienceLevel          && { experienceLevel:  parsedData.experienceLevel  }),
+      ...(parsedData.timezone                 && { timezone:         parsedData.timezone         }),
+      ...(parsedData.learningGoals?.length    && { learningGoals:    parsedData.learningGoals    }),
+      ...(parsedData.projectIdeas?.length     && { projectIdeas:     parsedData.projectIdeas     }),
+      hackathonInterest: parsedData.hackathonInterest ?? prev.hackathonInterest,
+      startupInterest:   parsedData.startupInterest   ?? prev.startupInterest,
+    }));
+    setShowResumeParser(false);
+    showToast("success", "Profile filled from your resume! Review and save.");
+  };
+
   const navigate = useNavigate();
 
   const handleSave = async () => {
@@ -183,7 +209,7 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Toast */}
       {toast && (
         <div className={`toast toast-top toast-center z-50`}>
@@ -193,13 +219,31 @@ export default function EditProfile() {
         </div>
       )}
 
-      <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
+      {/* ── AI Resume Parser modal ──────────────────────────────── */}
+      {showResumeParser && (
+        <ResumeParser
+          onApply={handleResumeApply}
+          onClose={() => setShowResumeParser(false)}
+        />
+      )}
+
+      {/* ── Page header ────────────────────────────────────────── */}
+      <div className="flex items-center justify-between mb-2 ml-2">
+        <h1 className="text-2xl font-bold">Edit Profile</h1>
+        <button
+          type="button"
+          className="btn outline outline-primary shadow-primary hover:bg-primary btn-sm gap-2"
+          onClick={() => setShowResumeParser(true)}
+        >
+          ✨ Import from Resume
+        </button>
+      </div>
 
       <div className="flex flex-col gap-8">
 
         {/* ── Section 1: Basic Info ─────────────────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-sm uppercase tracking-wider">
+          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
             Basic Info
           </h2>
 
@@ -208,15 +252,15 @@ export default function EditProfile() {
             <input
               type="text"
               value={form.firstName}
-              onChange={(e) => set("name", e.target.value)}
+              onChange={(e) => set("firstName", e.target.value)}
               className="input input-bordered w-full"
-              placeholder="Your Last Name"
+              placeholder="Your First Name"
             />
 
             <input
               type="text"
               value={form.lastName}
-              onChange={(e) => set("name", e.target.value)}
+              onChange={(e) => set("lastName", e.target.value)}
               className="input input-bordered w-full mt-2"
               placeholder="Your Last Name"
             />
@@ -289,7 +333,7 @@ export default function EditProfile() {
 
         {/* ── Section 2: Tech Profile ───────────────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-sm uppercase tracking-wider">
+          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
             Tech Profile
           </h2>
 
@@ -302,10 +346,10 @@ export default function EditProfile() {
           />
 
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Experience Level</span>
+            <label className="">
+              <span className="label mb-2" >Experience Level</span>
             </label>
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-3 flex-wrap mb-2">
               {EXPERIENCE_OPTIONS.map(({ value, label }) => (
                 <label key={value} className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -323,12 +367,12 @@ export default function EditProfile() {
           </div>
 
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Looking For</span>
-              <span className="label-text-alt text-base-content/40">
+            <div className="">
+              <h1 className="label text-md">Looking For</h1>
+              <h1 className="text-xs text-base-content/40 mb-2">
                 Who do you want to build with?
-              </span>
-            </label>
+              </h1>
+            </div>
             <div className="flex flex-wrap gap-2">
               {LOOKING_FOR_OPTIONS.map(({ value, label }) => (
                 <label
@@ -336,7 +380,7 @@ export default function EditProfile() {
                   className={`badge cursor-pointer select-none transition-all ${
                     form.lookingFor.includes(value)
                       ? "badge-primary"
-                      : "badge-ghost hover:badge-outline"
+                      : "outline outline-primary hover:badge-primary"
                   }`}
                 >
                   <input
@@ -354,7 +398,7 @@ export default function EditProfile() {
 
         {/* ── Section 3: Availability & Preferences ────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-sm uppercase tracking-wider">
+          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
             Availability & Preferences
           </h2>
 
@@ -405,8 +449,8 @@ export default function EditProfile() {
                   key={value}
                   className={`badge cursor-pointer select-none transition-all ${
                     form.goals.includes(value)
-                      ? "badge-secondary"
-                      : "badge-ghost hover:badge-outline"
+                      ? "badge-primary"
+                      : "outline outline-primary  hover:badge-primary"
                   }`}
                 >
                   <input
@@ -425,7 +469,7 @@ export default function EditProfile() {
           <div className="flex flex-col gap-3">
             <label className="flex items-center justify-between cursor-pointer">
               <div>
-                <p className="font-medium text-sm">Hackathon Interest</p>
+                <p className="font-medium text-md">Hackathon Interest</p>
                 <p className="text-xs text-base-content/40">
                   I'm keen to join hackathons
                 </p>
@@ -442,7 +486,7 @@ export default function EditProfile() {
 
             <label className="flex items-center justify-between cursor-pointer">
               <div>
-                <p className="font-medium text-sm">Startup Interest</p>
+                <p className="font-medium text-md">Startup Interest</p>
                 <p className="text-xs text-base-content/40">
                   I'm open to building a startup
                 </p>
@@ -459,7 +503,7 @@ export default function EditProfile() {
 
         {/* ── Section 4: Projects & Learning ───────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-sm uppercase tracking-wider">
+          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
             Projects & Learning
           </h2>
 

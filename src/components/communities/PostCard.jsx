@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
+import DeveloperLink from "../DeveloperLink";
 
 export default function PostCard({
   post,
@@ -138,21 +139,25 @@ export default function PostCard({
         {/* Author row */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="avatar">
-              <div className="w-10 h-10 rounded-full">
-                <img
-                  src={
-                    author?.photoUrl ||
-                    "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
-                  }
-                  alt="avatar"
-                />
+            <DeveloperLink userId={author?._id}>
+              <div className="avatar">
+                <div className="w-10 h-10 rounded-full">
+                  <img
+                    src={
+                      author?.photoUrl ||
+                      "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
+                    }
+                    alt="avatar"
+                  />
+                </div>
               </div>
-            </div>
+            </DeveloperLink>
             <div>
-              <p className="font-semibold text-sm">
-                {author?.firstName} {author?.lastName}
-              </p>
+              <DeveloperLink userId={author?._id} className="hover:underline hover:text-primary transition-colors">
+                <p className="font-semibold text-sm">
+                  {author?.firstName} {author?.lastName}
+                </p>
+              </DeveloperLink>
               <p className="text-xs text-base-content/40">
                 {timeAgo(post.createdAt)}
               </p>
@@ -179,7 +184,7 @@ export default function PostCard({
                     className="text-error"
                     onClick={handleDelete}
                   >
-                    🗑 Delete
+                    Delete Post
                   </button>
                 </li>
               </ul>
@@ -335,21 +340,25 @@ function CommentItem({ comment, loggedInUser, isAdmin, onDelete, timeAgo }) {
 
   return (
     <div className="flex gap-2 items-start group">
-      <div className="avatar">
-        <div className="w-7 h-7 rounded-full shrink-0">
-          <img
-            src={
-              author?.photoUrl ||
-              "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
-            }
-            alt="avatar"
-          />
+      <DeveloperLink userId={author?._id}>
+        <div className="avatar">
+          <div className="w-7 h-7 rounded-full shrink-0">
+            <img
+              src={
+                author?.photoUrl ||
+                "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
+              }
+              alt="avatar"
+            />
+          </div>
         </div>
-      </div>
+      </DeveloperLink>
       <div className="bg-base-200 rounded-2xl px-3 py-2 flex-1 text-sm relative">
-        <span className="font-semibold mr-1">
-          {author?.firstName} {author?.lastName}
-        </span>
+        <DeveloperLink userId={author?._id} className="hover:underline hover:text-primary transition-colors">
+          <span className="font-semibold mr-1">
+            {author?.firstName} {author?.lastName}
+          </span>
+        </DeveloperLink>
         <span className="text-base-content/70">{comment.content}</span>
         <span className="text-xs text-base-content/30 ml-2">
           {timeAgo(comment.createdAt)}

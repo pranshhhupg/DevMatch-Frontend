@@ -28,13 +28,13 @@ const ROLE_FILTERS = [
 ];
 
 const AVAILABILITY_FILTERS = [
-  { value: "all",       label: "Any Availability", icon: "🌐" },
-  { value: "weekends",  label: "Weekends Only",     icon: "📅" },
-  { value: "fulltime",  label: "Full-time",         icon: "💼" },
-  { value: "evenings",  label: "Night Owls",        icon: "🌙" },
-  { value: "hackathon", label: "Hackathon-ready",   icon: "⚡" },
-  { value: "startup",   label: "Startup-ready",     icon: "🚀" },
-  { value: "flexible",  label: "Flexible",          icon: "🤸" },
+  { value: "all",       label: "Any Availability",},
+  { value: "weekends",  label: "Weekends Only",    },
+  { value: "fulltime",  label: "Full-time",        },
+  { value: "evenings",  label: "Night Owls",       },
+  { value: "hackathon", label: "Hackathon-ready",  },
+  { value: "startup",   label: "Startup-ready",    },
+  { value: "flexible",  label: "Flexible",         },
 ];
 
 // ── Example suggestions ───────────────────────────────────────────────────────
@@ -173,13 +173,13 @@ export default function SearchDevelopers() {
     inputValue.trim() || role !== "all" || availability !== "all";
 
   return (
-    <div className="min-h-screen bg-base-100 pb-16">
+    <div className="min-h-screen bg-base-200 pb-16">
 
       {/* ── Hero / Search bar ─────────────────────────────────────────────── */}
-      <div className="bg-base-300 px-4 py-10 text-center">
-        <h1 className="text-3xl font-bold mb-1">Find Developers</h1>
+      <div className="bg-base-200 px-4 py-10 text-center">
+        <h1 className="text-4xl font-bold mb-1">Find Developers</h1>
         <p className="text-base-content/50 text-sm mb-6">
-          Search by name, skill, role, or goal — smart matching does the rest
+          Search by name, skill, role, or goal, smart matching does the rest.
         </p>
 
         {/* Search input */}
@@ -221,7 +221,7 @@ export default function SearchDevelopers() {
               <button
                 key={s}
                 onClick={() => handleSuggestion(s)}
-                className="badge badge-outline hover:badge-primary cursor-pointer transition-colors text-xs py-3 px-3"
+                className="badge bg-base-100 capitalize outline-base-200 hover:badge-primary cursor-pointer transition-colors text-xs py-3 px-3"
               >
                 {s}
               </button>
@@ -231,49 +231,150 @@ export default function SearchDevelopers() {
       </div>
 
       {/* ── Filters ───────────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-10 bg-base-200 border-b border-base-300 shadow-sm">
+      {/* ── Filters ───────────────────────────────────────────────────────── */}
+<div className="top-0 mx-50 py-2 rounded-lg z-20 bg-base-300 border-b border-base-300 backdrop-blur">
 
-        {/* Role filters */}
-        <div className="px-4 pt-3 pb-1 overflow-x-auto">
-          <div className="flex gap-2 min-w-max pb-1">
-            {ROLE_FILTERS.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => handleRoleChange(f.value)}
-                className={`btn btn-sm rounded-full ${
-                  role === f.value
-                    ? "btn-primary"
-                    : "btn-ghost border border-base-content/20"
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </div>
+<div className="max-w-7xl mx-auto px-4 py-4">
 
-        {/* Availability filters */}
-        <div className="px-4 pb-3 overflow-x-auto">
-          <div className="flex gap-2 min-w-max pb-1">
-            {AVAILABILITY_FILTERS.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => handleAvailChange(f.value)}
-                className={`btn btn-xs rounded-full ${
-                  availability === f.value
-                    ? "btn-secondary"
-                    : "btn-ghost border border-base-content/20"
-                }`}
-              >
-                {f.icon} {f.label}
-              </button>
-            ))}
-          </div>
+  {/* Filter Header */}
+  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+    {/* Left */}
+    <div>
+      <h2 className="font-bold text-lg ml-10">
+        Filters
+      </h2>
+
+      <p className="text-sm text-base-content/50 ml-10">
+        Narrow developers by role and availability
+      </p>
+    </div>
+
+    {/* Active Filter Pills */}
+    <div className="flex flex-wrap gap-2">
+
+      {role !== "all" && (
+        <div className="badge badge-primary font-semibold badge-md gap-2 px-4 py-3">
+           {
+            ROLE_FILTERS.find(
+              (f) => f.value === role
+            )?.label
+          }
+
+          <button
+            onClick={() =>
+              handleRoleChange("all")
+            }
+          >
+            ✕
+          </button>
         </div>
+      )}
+
+      {availability !== "all" && (
+        <div className="badge badge-primary badge-md font-semibold gap-2 px-4 py-3">
+          
+          {
+            AVAILABILITY_FILTERS.find(
+              (f) =>
+                f.value === availability
+            )?.label
+          }
+
+          <button
+            onClick={() =>
+              handleAvailChange("all")
+            }
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {(role !== "all" ||
+        availability !== "all") && (
+        <div className="">
+          <button
+            className="btn btn-ghost btn-md rounded-md pb-4"
+            onClick={() => {
+              handleRoleChange("all");
+              handleAvailChange("all");
+            }}
+          >
+            Clear All
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Filters Grid */}
+  <div className="grid mx-10 grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+
+    {/* Role Filters */}
+    <div className="bg-base-100 rounded-3xl p-4 border border-base-300 shadow-sm">
+
+      <div className="flex items-center gap-2 mb-4 ml-2 mt-1">
+        <h3 className="font-semibold">
+          Developer Roles
+        </h3>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+
+        {ROLE_FILTERS.map((f) => (
+          <button
+            key={f.value}
+            onClick={() =>
+              handleRoleChange(f.value)
+            }
+            className={`btn btn-sm rounded-2xl ${
+              role === f.value
+                ? "btn-primary"
+                : "btn-ghost border border-base-300"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Availability Filters */}
+    <div className="bg-base-100 rounded-3xl p-4 border border-base-300 shadow-sm">
+
+      <div className="flex items-center gap-2 mb-4">
+
+        <h3 className="font-semibold ml-2 mt-1">
+          Availability
+        </h3>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+
+        {AVAILABILITY_FILTERS.map((f) => (
+          <button
+            key={f.value}
+            onClick={() =>
+              handleAvailChange(f.value)
+            }
+            className={`btn btn-sm rounded-2xl ${
+              availability === f.value
+                ? "btn-primary"
+                : "btn-ghost border border-base-300"
+            }`}
+          >
+             {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
       {/* ── Results area ──────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-50 bg-base-300 mt-10 rounded-xl px-8 py-6">
 
         {/* Loading */}
         {loading && (
