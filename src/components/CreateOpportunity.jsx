@@ -105,16 +105,16 @@ export default function CreateOpportunity({ editData, onClose, onSuccess }) {
     setForm(
       isEdit
         ? {
-            title:       editData.title       ?? "",
+            title: editData.title ?? "",
             description: editData.description ?? "",
-            eventType:   editData.eventType   ?? "hackathon",
-            location:    editData.location    ?? "",
-            duration:    editData.duration    ?? "",
-            techStack:   editData.techStack   ?? [],
-            teamSize:    editData.teamSize    ?? "",
-            level:       editData.level       ?? "any",
+            eventType: editData.eventType   ?? "hackathon",
+            location: editData.location    ?? "",
+            duration: editData.duration    ?? "",
+            techStack: editData.techStack   ?? [],
+            teamSize: editData.teamSize    ?? "",
+            level: editData.level       ?? "any",
             rolesNeeded: editData.rolesNeeded ?? [],
-            applyLink:   editData.applyLink   ?? "",
+            applyLink: editData.applyLink   ?? "",
           }
         : EMPTY_FORM
     );
@@ -144,19 +144,19 @@ export default function CreateOpportunity({ editData, onClose, onSuccess }) {
 
   const handleSubmit = async () => {
     setError("");
-    if (!form.title.trim())                   return setError("Title is required");
-    if (form.title.trim().length < 5)         return setError("Title must be at least 5 characters");
-    if (!form.description.trim())             return setError("Description is required");
-    if (form.description.trim().length < 20)  return setError("Description must be at least 20 characters");
-    if (!form.eventType)                           return setError("Type is required");
-    if (!form.location.trim())                return setError("Location is required");
+    if (!form.title.trim()) return setError("Title is required");
+    if (form.title.trim().length < 5) return setError("Title must be at least 5 characters");
+    if (!form.description.trim())  return setError("Description is required");
+    if (form.description.trim().length < 20) return setError("Description must be at least 20 characters");
+    if (!form.eventType) return setError("Type is required");
+    if (!form.location.trim()) return setError("Location is required");
 
     const payload = {
       ...form,
-      title:       form.title.trim(),
+      title: form.title.trim(),
       description: form.description.trim(),
-      location:    form.location.trim(),
-      teamSize:    form.teamSize ? parseInt(form.teamSize) : undefined,
+      location: form.location.trim(),
+      teamSize: form.teamSize ? parseInt(form.teamSize) : undefined,
     };
 
     setSaving(true);

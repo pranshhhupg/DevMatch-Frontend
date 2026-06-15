@@ -7,9 +7,7 @@ import DeveloperLink from "./DeveloperLink";
 
 const Status = () => {
   const statusData = useSelector((store) => store?.status);
-
   const dispatch = useDispatch();
-
   const [search, setSearch] = useState("");
 
   const getStatusData = async () => {

@@ -4,20 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { setMyOpportunities, removeOpportunityFromStore } from "../utils/opportunitySlice";
+import { addUser } from "../utils/userSlice";
 
-// ── Static maps ───────────────────────────────────────────────────────────────
-const SCORE_BADGE = {
-  beginner:     "badge-info",
-  intermediate: "badge-warning",
-  advanced:     "badge-success",
-};
 
 const TYPE_META = {
-  "hackathon":      { badge: "badge-primary",  icon: "" },
-  "startup":        { badge: "badge-secondary", icon: "" },
-  "company hiring": { badge: "badge-success",   icon: "" },
-  "open source":    { badge: "badge-info",      icon: "" },
-  "freelance":      { badge: "badge-warning",   icon: "" },
+  "hackathon":{ badge: "badge-primary",icon: "" },
+  "startup": { badge: "badge-secondary",icon: "" },
+  "company hiring":{ badge: "badge-success",icon: "" },
+  "open source": { badge: "badge-info", icon: "" },
+  "freelance": { badge: "badge-warning", icon: "" },
 };
 
 function Row({ label, children }) {
@@ -35,10 +30,12 @@ function Row({ label, children }) {
 export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user     = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user);
   const { myList: myOpportunities } = useSelector((store) => store.opportunity);
 
   const [loadingOpps, setLoadingOpps] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoToast, setPhotoToast ] = useState(null);
 
   // Fetch the logged-in user's own opportunities for the profile section
   useEffect(() => {
@@ -58,6 +55,30 @@ export default function Profile() {
 
     fetchMyOpportunities();
   }, []);
+
+  // ── Upload profile photo directly from this page ─────────────────────────
+  const handlePhotoUpload = async (file) => {
+    setUploadingPhoto(true);
+    const formData = new FormData();
+    formData.append("photo", file);
+    try {
+      const res = await axios.post(`${BASE_URL}/upload/profile-photo`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      // Update Redux so NavBar + all components refresh instantly
+      dispatch(addUser({ ...user, photoUrl: res.data.photoUrl }));
+      setPhotoToast({ type: "success", msg: "Profile photo updated!" });
+    } catch (err) {
+      setPhotoToast({
+        type: "error",
+        msg: err?.response?.data?.message || "Photo upload failed",
+      });
+    } finally {
+      setUploadingPhoto(false);
+      setTimeout(() => setPhotoToast(null), 3000);
+    }
+  };
 
   const handleDeleteOpportunity = async (id) => {
     if (!window.confirm("Delete this opportunity?")) return;
@@ -84,26 +105,29 @@ export default function Profile() {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 flex flex-col gap-6">
 
+      {/* Toast */}
+      {photoToast && (
+        <div className="toast toast-top toast-center z-50">
+          <div className={`alert alert-${photoToast.type}`}>
+            <span>{photoToast.msg}</span>
+          </div>
+        </div>
+      )}
+
       <button
         className="btn btn-primary btn-md self-start"
         onClick={() => navigate(-1)}
       >
          Back
       </button>
+
       {/* ── Header Card ──────────────────────────────────────── */}
       <div className="card bg-base-200 shadow-md">
-        <div className="card-body items-center text-center gap-3">
-          <div className="avatar">
-            <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-              <img
-                src={
-                  photoUrl ||
-                  "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                }
-                alt={name}
-              />
-            </div>
-          </div>
+        <div className="card-body items-center justify-center mx-auto text-center gap-3">
+
+          {/* Avatar — click to change photo directly */}
+          <img src={photoUrl}
+          className="rounded-full w-30"/>
 
           <div>
             <h1 className="text-2xl font-bold">{firstName} {lastName}</h1>

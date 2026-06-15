@@ -16,25 +16,25 @@ import SearchDeveloperCard from "./SearchDeveloperCard";
 // ── Filter option definitions ─────────────────────────────────────────────────
 
 const ROLE_FILTERS = [
-  { value: "all",       label: "All Roles"   },
-  { value: "frontend",  label: "Frontend Dev"  },
-  { value: "backend",   label: "Backend Dev"   },
+  { value: "all", label: "All Roles"   },
+  { value: "frontend", label: "Frontend Dev"  },
+  { value: "backend", label: "Backend Dev"   },
   { value: "fullstack", label: "Full Stack"     },
-  { value: "ml",        label: "ML Engineer"   },
-  { value: "devops",    label: "DevOps"         },
-  { value: "mobile",    label: "Mobile Dev"    },
-  { value: "designer",  label: "UI/UX Designer" },
-  { value: "product",   label: "Product Manager"},
+  { value: "ml", label: "ML Engineer"   },
+  { value: "devops",label: "DevOps"         },
+  { value: "mobile",  label: "Mobile Dev"    },
+  { value: "designer", label: "UI/UX Designer" },
+  { value: "product", label: "Product Manager"},
 ];
 
 const AVAILABILITY_FILTERS = [
-  { value: "all",       label: "Any Availability",},
-  { value: "weekends",  label: "Weekends Only",    },
-  { value: "fulltime",  label: "Full-time",        },
-  { value: "evenings",  label: "Night Owls",       },
-  { value: "hackathon", label: "Hackathon-ready",  },
-  { value: "startup",   label: "Startup-ready",    },
-  { value: "flexible",  label: "Flexible",         },
+  { value: "all", label: "Any Availability"},
+  { value: "weekends", label: "Weekends Only"},
+  { value: "fulltime", label: "Full-time" },
+  { value: "evenings", label: "Night Owls" },
+  { value: "hackathon",label: "Hackathon-ready" },
+  { value: "startup", label: "Startup-ready"   },
+  { value: "flexible", label: "Flexible" },
 ];
 
 // ── Example suggestions ───────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ export default function SearchDevelopers() {
 
       {/* ── Hero / Search bar ─────────────────────────────────────────────── */}
       <div className="bg-base-200 px-4 py-10 text-center">
-        <h1 className="text-4xl font-bold mb-1">Find Developers</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-1">Find Developers</h1>
         <p className="text-base-content/50 text-sm mb-6">
           Search by name, skill, role, or goal, smart matching does the rest.
         </p>
@@ -231,21 +231,20 @@ export default function SearchDevelopers() {
       </div>
 
       {/* ── Filters ───────────────────────────────────────────────────────── */}
-      {/* ── Filters ───────────────────────────────────────────────────────── */}
-<div className="top-0 mx-50 py-2 rounded-lg z-20 bg-base-300 border-b border-base-300 backdrop-blur">
+<div className="top-0 mx-2 sm:mx-6 lg:mx-50 py-2 rounded-lg z-20 bg-base-300 border-b border-base-300 backdrop-blur">
 
-<div className="max-w-7xl mx-auto px-4 py-4">
+<div className="max-w-7xl mx-auto px-2 sm:px-4 py-4">
 
   {/* Filter Header */}
   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
     {/* Left */}
     <div>
-      <h2 className="font-bold text-lg ml-10">
+      <h2 className="font-bold text-lg ml-2 sm:ml-10">
         Filters
       </h2>
 
-      <p className="text-sm text-base-content/50 ml-10">
+      <p className="text-sm text-base-content/50 ml-2 sm:ml-10">
         Narrow developers by role and availability
       </p>
     </div>
@@ -309,7 +308,7 @@ export default function SearchDevelopers() {
   </div>
 
   {/* Filters Grid */}
-  <div className="grid mx-10 grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+  <div className="grid mx-2 sm:mx-10 grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
 
     {/* Role Filters */}
     <div className="bg-base-100 rounded-3xl p-4 border border-base-300 shadow-sm">
@@ -374,7 +373,7 @@ export default function SearchDevelopers() {
 </div>
 
       {/* ── Results area ──────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-50 bg-base-300 mt-10 rounded-xl px-8 py-6">
+      <div className="max-w-7xl mx-2 sm:mx-6 lg:mx-50 bg-base-300 mt-10 rounded-xl px-3 sm:px-8 py-6">
 
         {/* Loading */}
         {loading && (
@@ -453,7 +452,7 @@ export default function SearchDevelopers() {
 
         {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-10">
+          <div className="flex justify-center flex-wrap gap-2 mt-10">
             <button
               className="btn btn-sm btn-ghost"
               disabled={page <= 1}

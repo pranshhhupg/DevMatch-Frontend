@@ -37,19 +37,19 @@ export default function OpportunityDetails({ opportunity, onClose }) {
 
             <div className="flex flex-wrap gap-2 mt-3">
               {eventType && (
-                <span className="badge badge-primary capitalize">
+                <span className="badge badge-primary capitalize font-semibold">
                   {eventType}
                 </span>
               )}
 
               {level && (
-                <span className="badge badge-secondary capitalize">
+                <span className="badge badge-primary capitalize font-semibold">
                   {level}
                 </span>
               )}
 
               {location && (
-                <span className="badge badge-outline">
+                <span className="badge badge-outline font-semibold">
                   📍 {location}
                 </span>
               )}

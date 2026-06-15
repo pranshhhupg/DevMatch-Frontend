@@ -22,14 +22,14 @@ export default function CollabHub() {
   const { list: opportunities } = useSelector((store) => store.opportunity);
 
   // Filter UI state (what's typed) vs applied state (what was last fetched)
-  const [filters,    setFilters]   = useState(EMPTY_FILTERS);
-  const [applied,    setApplied]   = useState(EMPTY_FILTERS);
-  const [loading,    setLoading]   = useState(false);
-  const [error,      setError]     = useState(null);
-  const [page,       setPage]      = useState(1);
-  const [total,      setTotal]     = useState(0);
+  const [filters,setFilters]   = useState(EMPTY_FILTERS);
+  const [applied, setApplied]   = useState(EMPTY_FILTERS);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]     = useState(null);
+  const [page, setPage]      = useState(1);
+  const [total, setTotal]     = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [fetched,    setFetched]  = useState(false);
+  const [fetched, setFetched]  = useState(false);
 
   // Modal
   const [showModal, setShowModal] = useState(false);

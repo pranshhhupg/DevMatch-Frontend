@@ -57,7 +57,7 @@ export default function MatchBadge({
   rawBreakdown = {},
 }) {
 
-  const { color, label } = getScoreMeta(score);
+  const {color, label} = getScoreMeta(score);
 
   const hasBreakdown =
     Object.keys(rawBreakdown || {}).length > 0;

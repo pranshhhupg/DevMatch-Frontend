@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
+import ImageUploader from "../ImageUploader";
 
 const CATEGORIES = [
   { value: "dsa", label: "DSA Preparation" },
@@ -25,8 +26,10 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
     coverImage: "https://png.pngtree.com/png-vector/20191009/ourmid/pngtree-group-icon-png-image_1796653.jpg",
     messagePermission: "all",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState("");
+  const [bannerFile,setBannerFile] = useState(null);
+  const [uploadingBanner,setUploadingBanner] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -41,12 +44,35 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
     }
     setLoading(true);
     try {
+      // 1. Create the community (without coverImage in body)
+      const { coverImage: _ignored, ...bodyWithoutCover } = form;
       const res = await axios.post(
         `${BASE_URL}/community`,
-        form,
+        bodyWithoutCover,
         { withCredentials: true }
       );
-      onCreated(res.data.data);
+      const newCommunity = res.data.data;
+
+      // 2. If user picked a banner file, upload it now
+      if (bannerFile) {
+        setUploadingBanner(true);
+        const fd = new FormData();
+        fd.append("banner", bannerFile);
+        try {
+          const bannerRes = await axios.post(
+            `${BASE_URL}/upload/community-banner/${newCommunity._id}`,
+            fd,
+            { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
+          );
+          newCommunity.coverImage = bannerRes.data.coverImage;
+        } catch {
+          // Banner upload failed — community still created, just no banner
+        } finally {
+          setUploadingBanner(false);
+        }
+      }
+
+      onCreated(newCommunity);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create community");
     } finally {
@@ -156,16 +182,13 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
               {/* Cover Image */}
               <div className="space-y-2">
                 <label className="text-lg font-semibold">
-                  Cover Image URL
+                  Cover Image
                 </label>
-  
-                <input
-                  type="url"
-                  name="coverImage"
-                  className="input input-bordered w-full h-12 sm:h-14 rounded-lg"
-                  placeholder="https://..."
-                  value={form.coverImage}
-                  onChange={handleChange}
+                <ImageUploader
+                  shape="banner"
+                  currentImage={form.coverImage}
+                  onUpload={(file) => setBannerFile(file)}
+                  uploading={uploadingBanner}
                 />
               </div>
             </div>

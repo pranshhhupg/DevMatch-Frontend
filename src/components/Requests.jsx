@@ -142,7 +142,7 @@ const Requests = () => {
                         <img
                           src={
                             photoUrl ||
-                            "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg?w=768"
                           }
                           alt="USER"
                           className="object-cover hover:ring-2 hover:ring-primary transition-all rounded-2xl"

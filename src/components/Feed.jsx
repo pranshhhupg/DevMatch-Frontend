@@ -7,12 +7,12 @@ import UserCard from "./UserCard";
 
 export default function Feed() {
   const dispatch  = useDispatch();
-  const feed      = useSelector((store) => store.feed);
+  const feed = useSelector((store) => store.feed);
   const [loading, setLoading] = useState(false);
-  const [error,   setError  ] = useState(null);
-  const [page,    setPage   ] = useState(1);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [fetched,    setFetched   ] = useState(false);
+  const [fetched, setFetched ] = useState(false);
 
   const fetchFeed = async (pageNum = 1) => {
     setLoading(true);

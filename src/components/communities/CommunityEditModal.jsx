@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
+import ImageUploader from "../ImageUploader";
 
 const CATEGORY_LABELS = {
   dsa: "DSA Preparation",
@@ -27,12 +28,13 @@ export default function CommunityEditModal({
     description: community?.description || "",
     category: community?.category || "general",
     coverImage: community?.coverImage || "https://png.pngtree.com/png-vector/20191009/ourmid/pngtree-group-icon-png-image_1796653.jpg",
-    messagePermission:
-      community?.messagePermission || "all",
+    messagePermission: community?.messagePermission || "all",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState("");
+  const [bannerFile,setBannerFile] = useState(null);
+  const [uploadingBanner,setUploadingBanner] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({
@@ -49,18 +51,39 @@ export default function CommunityEditModal({
     try {
       setLoading(true);
 
+      // 1. Update text fields (send coverImage only if no new file was picked)
+      const { coverImage: _ignored, ...bodyWithoutCover } = form;
       const res = await axios.put(
         `${BASE_URL}/community/${community._id}`,
-        form,
+        bodyWithoutCover,
         { withCredentials: true }
       );
+      let updatedCommunity = res.data.data;
 
-      onUpdated(res.data.data);
+      // 2. If user picked a new banner, upload it
+      if (bannerFile) {
+        setUploadingBanner(true);
+        const fd = new FormData();
+        fd.append("banner", bannerFile);
+        try {
+          const bannerRes = await axios.post(
+            `${BASE_URL}/upload/community-banner/${community._id}`,
+            fd,
+            { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
+          );
+          updatedCommunity = { ...updatedCommunity, coverImage: bannerRes.data.coverImage };
+        } catch {
+          // Banner upload failed — other edits still saved
+        } finally {
+          setUploadingBanner(false);
+        }
+      }
+
+      onUpdated(updatedCommunity);
       onClose();
     } catch (err) {
       setError(
-        err.response?.data?.message ||
-          "Failed to update community"
+        err.response?.data?.message || "Failed to update community"
       );
     } finally {
       setLoading(false);
@@ -167,16 +190,13 @@ export default function CommunityEditModal({
               {/* Cover Image */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold">
-                  Cover Image URL
+                  Cover Image
                 </label>
-
-                <input
-                  type="url"
-                  name="coverImage"
-                  className="input input-bordered w-full h-12 sm:h-14 rounded-2xl"
-                  placeholder="https://..."
-                  value={form.coverImage}
-                  onChange={handleChange}
+                <ImageUploader
+                  shape="banner"
+                  currentImage={form.coverImage}
+                  onUpload={(file) => setBannerFile(file)}
+                  uploading={uploadingBanner}
                 />
               </div>
             </div>

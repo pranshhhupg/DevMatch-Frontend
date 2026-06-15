@@ -45,12 +45,12 @@ function ReviewSection({ title, children }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function ResumeParser({ onApply, onClose }) {
-  const fileInputRef            = useRef(null);
-  const [step,     setStep]     = useState(STEP.UPLOAD);
-  const [file,     setFile]     = useState(null);          // File object
+  const fileInputRef = useRef(null);
+  const [step, setStep] = useState(STEP.UPLOAD);
+  const [file,setFile] = useState(null);          // File object
   const [dragOver, setDragOver] = useState(false);
-  const [parsed,   setParsed]   = useState(null);          // extracted profile
-  const [errMsg,   setErrMsg]   = useState("");
+  const [parsed, setParsed] = useState(null);          // extracted profile
+  const [errMsg,setErrMsg] = useState("");
 
   // ── File handling ─────────────────────────────────────────────────────────
   const acceptFile = (f) => {

@@ -3,19 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
-// ── Static maps ───────────────────────────────────────────────────────────────
-const SCORE_BADGE = {
-  beginner:     "badge-info",
-  intermediate: "badge-warning",
-  advanced:     "badge-success",
-};
-
 const TYPE_META = {
-  "hackathon":      { badge: "badge-primary",   icon: "⚡", label: "Hackathon"      },
-  "startup":        { badge: "badge-secondary",  icon: "🚀", label: "Startup"        },
+  "hackathon": { badge: "badge-primary",   icon: "⚡", label: "Hackathon" },
+  "startup": { badge: "badge-secondary",  icon: "🚀", label: "Startup" },
   "company hiring": { badge: "badge-success",    icon: "🏢", label: "Company Hiring" },
-  "open source":    { badge: "badge-info",       icon: "🔓", label: "Open Source"    },
-  "freelance":      { badge: "badge-warning",    icon: "💼", label: "Freelance"      },
+  "open source": { badge: "badge-info",       icon: "🔓", label: "Open Source" },
+  "freelance":  { badge: "badge-warning",    icon: "💼", label: "Freelance" },
 };
 
 const DEFAULT_AVATAR =

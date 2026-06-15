@@ -5,18 +5,18 @@ import DeveloperLink from "./DeveloperLink";
 
 // ── Static maps ───────────────────────────────────────────────────────────────
 const TYPE_META = {
-  "hackathon":      { badge: "badge-primary",   icon: "", label: "Hackathon"      },
-  "startup":        { badge: "badge-primary",  icon: "", label: "Startup"        },
-  "company hiring": { badge: "badge-primary",    icon: "", label: "Company Hiring" },
-  "open source":    { badge: "badge-primary",       icon: "", label: "Open Source"    },
-  "freelance":      { badge: "badge-primary",    icon: "", label: "Freelance"      },
+  "hackathon": { badge: "badge-primary",   icon: "", label: "Hackathon" },
+  "startup": { badge: "badge-primary",  icon: "", label: "Startup" },
+  "company hiring":{ badge: "badge-primary",    icon: "", label: "Company Hiring"},
+  "open source":{ badge: "badge-primary",       icon: "", label: "Open Source" },
+  "freelance": { badge: "badge-primary",    icon: "", label: "Freelance"},
 };
 
 const LEVEL_BADGE = {
-  "beginner":     "badge-primary",
-  "intermediate": "badge-primary",
-  "expert":       "badge-primary",
-  "any":          "badge-primary",
+  "beginner": "badge-primary",
+  "intermediate":"badge-primary",
+  "expert": "badge-primary",
+  "any":"badge-primary",
 };
 
 function timeAgo(dateStr) {
