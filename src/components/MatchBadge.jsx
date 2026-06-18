@@ -1,20 +1,19 @@
 const WEIGHT_MAX = {
-  role:               20,
-  preferredRoles:           15,
-  skills:                   18,
-  goals:                    10,
+  lookingFor:                     35,
+  skills:                   10,
+  goals:                     8,
   timezone:                  6,
   preferredTimezones:        6,
   experienceLevel:           5,
   preferredExperienceLevel:  5,
   preferredAvailability:     5,
-  preferredInterests:        5,
+  preferredInterests:       15,
   interests:                 3,
   projects:                  2,
 };
 
 const FACTOR_LABELS = {
-  role:               "Role fit",
+  lookingFor:                 "Role fit",
   preferredRoles:           "Pref. Role",
   skills:                   "Skills",
   goals:                    "Goals",
@@ -72,18 +71,22 @@ export default function MatchBadge({
   // Merge duplicate pairs — keep whichever has the higher raw score,
   // label it with the winner's key so the label stays accurate.
   const mergedBreakdown = { ...rawBreakdown };
-  const tzA   = mergedBreakdown.timezone           ?? 0;
-  const tzB   = mergedBreakdown.preferredTimezones ?? 0;
+
+  // Merge timezone pair — show whichever scored higher
+  const tzA = mergedBreakdown.timezone           ?? 0;
+  const tzB = mergedBreakdown.preferredTimezones ?? 0;
   mergedBreakdown.timezone = Math.max(tzA, tzB);
   delete mergedBreakdown.preferredTimezones;
 
-  const expA  = mergedBreakdown.experienceLevel           ?? 0;
-  const expB  = mergedBreakdown.preferredExperienceLevel  ?? 0;
+  // Merge experience pair — show whichever scored higher
+  const expA = mergedBreakdown.experienceLevel           ?? 0;
+  const expB = mergedBreakdown.preferredExperienceLevel  ?? 0;
   mergedBreakdown.experienceLevel = Math.max(expA, expB);
   delete mergedBreakdown.preferredExperienceLevel;
 
-  const intA  = mergedBreakdown.interests          ?? 0;
-  const intB  = mergedBreakdown.preferredInterests ?? 0;
+  // Merge interests pair — show whichever scored higher
+  const intA = mergedBreakdown.interests          ?? 0;
+  const intB = mergedBreakdown.preferredInterests ?? 0;
   mergedBreakdown.interests = Math.max(intA, intB);
   delete mergedBreakdown.preferredInterests;
 

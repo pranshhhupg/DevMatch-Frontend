@@ -93,7 +93,7 @@ export default function Profile() {
 
   const {
     firstName, lastName, photoUrl, about, age, gender,
-    skills = [], role = [], goals = [],
+    skills = [], lookingFor = [], goals = [],
     availability, experienceLevel, timezone,
     hackathonInterest, startupInterest,
     learningGoals = [], projectIdeas = [],
@@ -178,8 +178,8 @@ export default function Profile() {
           {/* My Role — what role this user identifies as / offers */}
           <Row label="My Role">
             <div className="flex flex-wrap gap-1">
-              {role.filter((r) => r !== "any").length > 0
-                ? role.map((r) => (
+              {lookingFor.filter((r) => r !== "any").length > 0
+                ? lookingFor.map((r) => (
                     <span key={r} className="badge badge-primary badge-sm capitalize font-semibold">
                       {r}
                     </span>

@@ -103,7 +103,7 @@ export default function ViewProfile() {
 
   const {
     firstName, lastName, photoUrl, about, age, gender,
-    skills = [], role = [], goals = [],
+    skills = [], lookingFor = [], goals = [],
     availability, experienceLevel, timezone,
     hackathonInterest, startupInterest,
     learningGoals = [], projectIdeas = [],
@@ -120,7 +120,7 @@ export default function ViewProfile() {
     preferredRoles.length > 0 ? preferredRoles : ["any"];
 
   // Roles this user actually plays (their own identity), filter "any"
-  const ownRoles = role.filter((r) => r !== "any");
+  const ownRoles = lookingFor.filter((r) => r !== "any");
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 flex flex-col gap-6">

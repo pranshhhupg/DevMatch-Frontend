@@ -11,7 +11,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
     photoUrl,
     about,
     skills = [],
-    role = [],
+    lookingFor = [],
     goals = [],
     availability,
     experienceLevel,
@@ -48,7 +48,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
   };
 
   // Own roles this dev plays — filter "any" since it's not meaningful to display
-  const ownRoles = role.filter((r) => r !== "any");
+  const ownRoles = lookingFor.filter((r) => r !== "any");
 
   return (
     <div

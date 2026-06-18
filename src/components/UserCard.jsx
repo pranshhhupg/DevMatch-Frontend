@@ -10,13 +10,11 @@ export default function UserCard({ feedItem }) {
   const dispatch = useDispatch();
 
   const { _id, firstName, lastName, photoUrl, about, age, gender, skills = [],
-          experienceLevel, availability, role = [],
+          experienceLevel, availability, lookingFor = [],
           preferredRoles = [], preferredTimezones = [],
           preferredInterests = [], preferredExperienceLevel,
           preferredAvailability } = user;
 
-  // Own roles this dev plays — filter "any"
-  const ownRoles = role.filter((r) => r !== "any");
 
   // Preferred roles to display — fall back to "any" if not set
   const displayedPreferredRoles =
@@ -100,6 +98,7 @@ export default function UserCard({ feedItem }) {
               )}
             </div>
           )}
+
 
           {/* Looking For — desired developer role */}
           <p className="text-xs text-base-content/50">

@@ -238,7 +238,7 @@ export default function EditProfile() {
     skills:           user?.skills           || [],
     experienceLevel:  user?.experienceLevel  || "intermediate",
     // ── my looking for (what I want to be found for / what I seek by role) ──
-    role:       user?.role       || ["any"],
+    lookingFor:       user?.lookingFor       || ["any"],
     // ── my own preferences / goals ──
     goals:            user?.goals            || [],
     availability:     user?.availability     || "flexible",
@@ -304,7 +304,7 @@ export default function EditProfile() {
       ...(parsedData.gender           && { gender:           parsedData.gender           }),
       ...(parsedData.about            && { about:            parsedData.about            }),
       ...(parsedData.skills?.length   && { skills:           parsedData.skills           }),
-      ...(parsedData.role?.length && { role:     parsedData.role       }),
+      ...(parsedData.lookingFor?.length && { lookingFor:     parsedData.lookingFor       }),
       ...(parsedData.goals?.length    && { goals:            parsedData.goals            }),
       ...(parsedData.availability     && { availability:     parsedData.availability     }),
       ...(parsedData.experienceLevel  && { experienceLevel:  parsedData.experienceLevel  }),
@@ -328,7 +328,7 @@ export default function EditProfile() {
   const handleSave = async () => {
     if (!form.firstName?.trim())
       return showToast("error", "Name is required");
-    if (form.role.length === 0)
+    if (form.lookingFor.length === 0)
       return showToast("error", "Select at least one role you're looking for");
     if (form.preferredRoles.length === 0)
       return showToast("error", "Select at least one preferred developer role (or 'Anyone')");
@@ -516,7 +516,7 @@ export default function EditProfile() {
             </p>
             <BadgeMultiSelect
               options={ROLE_OPTIONS}
-              selected={form.role}
+              selected={form.lookingFor}
               onToggle={(v) => toggleArray("role", v)}
             />
           </div>
