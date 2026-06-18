@@ -37,7 +37,6 @@ export default function Profile() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoToast, setPhotoToast ] = useState(null);
 
-  // Fetch the logged-in user's own opportunities for the profile section
   useEffect(() => {
     const fetchMyOpportunities = async () => {
       setLoadingOpps(true);
@@ -56,7 +55,6 @@ export default function Profile() {
     fetchMyOpportunities();
   }, []);
 
-  // ── Upload profile photo directly from this page ─────────────────────────
   const handlePhotoUpload = async (file) => {
     setUploadingPhoto(true);
     const formData = new FormData();
@@ -66,7 +64,6 @@ export default function Profile() {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // Update Redux so NavBar + all components refresh instantly
       dispatch(addUser({ ...user, photoUrl: res.data.photoUrl }));
       setPhotoToast({ type: "success", msg: "Profile photo updated!" });
     } catch (err) {
@@ -96,11 +93,19 @@ export default function Profile() {
 
   const {
     firstName, lastName, photoUrl, about, age, gender,
-    skills = [], lookingFor = [], goals = [],
+    skills = [], role = [], goals = [],
     availability, experienceLevel, timezone,
     hackathonInterest, startupInterest,
     learningGoals = [], projectIdeas = [],
+    // desired developer preferences
+    preferredRoles = [], preferredTimezones = [],
+    preferredInterests = [], preferredExperienceLevel,
+    preferredAvailability,
   } = user;
+
+  // Resolve displayed preferred roles — fall back to ["any"] if nothing set
+  const displayedPreferredRoles =
+    preferredRoles.length > 0 ? preferredRoles : ["any"];
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 flex flex-col gap-6">
@@ -125,7 +130,6 @@ export default function Profile() {
       <div className="card bg-base-200 shadow-md">
         <div className="card-body items-center justify-center mx-auto text-center gap-3">
 
-          {/* Avatar — click to change photo directly */}
           <img src={photoUrl}
           className="rounded-full w-30"/>
 
@@ -171,17 +175,19 @@ export default function Profile() {
             </Row>
           )}
 
-          {lookingFor.length > 0 && (
-            <Row label="Looking For">
-              <div className="flex flex-wrap gap-1">
-                {lookingFor.map((r) => (
-                  <span key={r} className="badge badge-primary badge-sm capitalize font-semibold">
-                    {r}
-                  </span>
-                ))}
-              </div>
-            </Row>
-          )}
+          {/* My Role — what role this user identifies as / offers */}
+          <Row label="My Role">
+            <div className="flex flex-wrap gap-1">
+              {role.filter((r) => r !== "any").length > 0
+                ? role.map((r) => (
+                    <span key={r} className="badge badge-primary badge-sm capitalize font-semibold">
+                      {r}
+                    </span>
+                  ))
+                : <span className="text-sm text-base-content/40">—</span>
+              }
+            </div>
+          </Row>
         </div>
       </div>
 
@@ -228,6 +234,63 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* ── Looking For (desired developer) ──────────────────── */}
+      <div className="card bg-base-200 shadow-sm">
+        <div className="card-body gap-4">
+          <h2 className="card-title text-base">Looking For</h2>
+
+          <Row label="Role">
+            <div className="flex flex-wrap gap-1">
+              {displayedPreferredRoles.map((r) => (
+                <span key={r} className="badge badge-primary badge-sm capitalize font-semibold">
+                  {r}
+                </span>
+              ))}
+            </div>
+          </Row>
+
+          {preferredExperienceLevel && (
+            <Row label="Experience">
+              <span className="badge badge-primary badge-sm capitalize font-semibold">
+                {preferredExperienceLevel}
+              </span>
+            </Row>
+          )}
+
+          {preferredAvailability && (
+            <Row label="Availability">
+              <span className="badge badge-primary badge-sm capitalize font-semibold">
+                {preferredAvailability}
+              </span>
+            </Row>
+          )}
+
+          {preferredTimezones.length > 0 && (
+            <Row label="Timezone">
+              <div className="flex flex-wrap gap-1">
+                {preferredTimezones.map((tz) => (
+                  <span key={tz} className="badge badge-primary badge-sm font-semibold">
+                    {tz}
+                  </span>
+                ))}
+              </div>
+            </Row>
+          )}
+
+          {preferredInterests.length > 0 && (
+            <Row label="Interests">
+              <div className="flex flex-wrap gap-1">
+                {preferredInterests.map((i) => (
+                  <span key={i} className="badge badge-primary badge-sm capitalize font-semibold">
+                    {i}
+                  </span>
+                ))}
+              </div>
+            </Row>
+          )}
+        </div>
+      </div>
+
       {/* ── Projects & Learning ──────────────────────────────── */}
       {(learningGoals.length > 0 || projectIdeas.length > 0) && (
         <div className="card bg-base-200 shadow-sm">
@@ -267,14 +330,12 @@ export default function Profile() {
             </Link>
           </div>
 
-          {/* Loading */}
           {loadingOpps && (
             <div className="flex justify-center py-4">
               <span className="loading loading-spinner loading-sm text-primary" />
             </div>
           )}
 
-          {/* Empty */}
           {!loadingOpps && myOpportunities.length === 0 && (
             <div className="text-center py-6">
               <p className="text-sm text-base-content/40">
@@ -286,7 +347,6 @@ export default function Profile() {
             </div>
           )}
 
-          {/* List */}
           {!loadingOpps && myOpportunities.length > 0 && (
             <div className="flex flex-col gap-3">
               {myOpportunities.map((opp) => {

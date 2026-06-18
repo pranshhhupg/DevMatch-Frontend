@@ -3,15 +3,6 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import DeveloperLink from "./DeveloperLink";
 
-/**
- * SearchDeveloperCard
- * ─────────────────────────────────────────────────────────────────────────────
- * Displays a developer in search results.
- * Props:
- *   user      – user object from /user/search
- *   highlight – search query string used to highlight matched skills
- * ─────────────────────────────────────────────────────────────────────────────
- */
 export default function SearchDeveloperCard({ user, highlight = "" }) {
   const {
     _id,
@@ -20,7 +11,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
     photoUrl,
     about,
     skills = [],
-    lookingFor = [],
+    role = [],
     goals = [],
     availability,
     experienceLevel,
@@ -28,16 +19,14 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
     startupInterest,
   } = user;
 
-  const [status, setStatus]   = useState("idle"); // idle | loading | connected | error
-  const [errMsg, setErrMsg]   = useState("");
+  const [status, setStatus] = useState("idle");
+  const [errMsg, setErrMsg] = useState("");
 
-  // ── Highlight a skill if it partially matches the search query ─────────────
   const isHighlighted = (skill) => {
     if (!highlight.trim()) return false;
     return skill.toLowerCase().includes(highlight.toLowerCase());
   };
 
-  // ── Send connection request ────────────────────────────────────────────────
   const handleConnect = async () => {
     setStatus("loading");
     setErrMsg("");
@@ -58,6 +47,9 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
     }
   };
 
+  // Own roles this dev plays — filter "any" since it's not meaningful to display
+  const ownRoles = role.filter((r) => r !== "any");
+
   return (
     <div
       className="
@@ -70,13 +62,13 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
          flex flex-col
       "
     >
-  
+
       {/* Hover Glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 pointer-events-none" />
-  
+
       {/* ── Image ── */}
       <div className="relative h-52 overflow-hidden shrink-0">
-  
+
         <DeveloperLink userId={_id} className="block h-full">
           <img
             src={photoUrl}
@@ -92,10 +84,10 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
             }}
           />
         </DeveloperLink>
-  
+
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-  
+
         {/* Availability */}
         {availability && (
           <div className="absolute bottom-3 left-3">
@@ -105,10 +97,10 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
           </div>
         )}
       </div>
-  
+
       {/* ── Content ── */}
       <div className="p-4 flex flex-col flex-1 gap-3">
-  
+
         {/* Name */}
         <div>
           <DeveloperLink
@@ -119,22 +111,22 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
               {firstName} {lastName}
             </h2>
           </DeveloperLink>
-  
-          {/* Looking For */}
-          {lookingFor.length > 0 && (
-            <p className="text-sm text-primary font-medium mt-1">
-              Looking for {lookingFor.slice(0, 2).join(", ")}
+
+          {/* Role this dev plays — was incorrectly "Looking for" before */}
+          {ownRoles.length > 0 && (
+            <p className="text-sm text-primary font-medium mt-1 capitalize">
+              {ownRoles.slice(0, 2).join(", ")}
             </p>
           )}
         </div>
-  
+
         {/* About */}
         {about && (
           <p className="text-sm text-base-content/70 leading-relaxed line-clamp-2">
             {about}
           </p>
         )}
-  
+
         {/* Skills */}
         {skills.length > 0 && (
           <div className="flex flex-wrap gap-1">
@@ -153,7 +145,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
                 {skill}
               </span>
             ))}
-  
+
             {skills.length > 4 && (
               <span className="px-3 py-1 rounded-md text-xs bg-base-300">
                 +{skills.length - 4}
@@ -161,15 +153,14 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
             )}
           </div>
         )}
-  
-  
+
         {/* Error */}
         {status === "error" && (
           <div className="alert alert-error py-2 text-sm rounded-lg">
             <span>{errMsg}</span>
           </div>
         )}
-  
+
         {/* Connect Button */}
         <div className="mt-auto pt-2">
           {status === "connected" ? (
@@ -190,9 +181,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
               onClick={handleConnect}
               disabled={status === "loading"}
             >
-              {status === "loading"
-                ? "Sending..."
-                : "Connect"}
+              {status === "loading" ? "Sending..." : "Connect"}
             </button>
           )}
         </div>

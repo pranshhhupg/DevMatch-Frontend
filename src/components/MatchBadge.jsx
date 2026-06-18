@@ -1,25 +1,35 @@
 const WEIGHT_MAX = {
-  lookingFor: 35,
-  skills: 25,
-  goals: 15,
-  timezone: 8,
-  experienceLevel: 7,
-  interests: 5,
-  projects: 5,
+  role:               20,
+  preferredRoles:           15,
+  skills:                   18,
+  goals:                    10,
+  timezone:                  6,
+  preferredTimezones:        6,
+  experienceLevel:           5,
+  preferredExperienceLevel:  5,
+  preferredAvailability:     5,
+  preferredInterests:        5,
+  interests:                 3,
+  projects:                  2,
 };
 
 const FACTOR_LABELS = {
-  lookingFor: "Role fit",
-  skills: "Skills",
-  goals: "Goals",
-  timezone: "Timezone",
-  experienceLevel: "Experience",
-  interests: "Interests",
-  projects: "Projects",
+  role:               "Role fit",
+  preferredRoles:           "Pref. Role",
+  skills:                   "Skills",
+  goals:                    "Goals",
+  timezone:                 "Timezone",
+  preferredTimezones:       "Timezone",
+  experienceLevel:          "Experience",
+  preferredExperienceLevel: "Experience",
+  preferredAvailability:    "Availability",
+  preferredInterests:       "Interests",
+  interests:                "Interests",
+  projects:                 "Projects",
 };
 
 function getScoreMeta(score) {
-  if (score >= 75) {
+  if (score >= 60) {
     return {
       color: "badge-success",
       ring: "ring-success/30",
@@ -27,7 +37,7 @@ function getScoreMeta(score) {
     };
   }
 
-  if (score >= 50) {
+  if (score >= 45) {
     return {
       color: "badge-warning",
       ring: "ring-warning/30",
@@ -59,8 +69,26 @@ export default function MatchBadge({
 
   const {color, label} = getScoreMeta(score);
 
+  // Merge duplicate pairs — keep whichever has the higher raw score,
+  // label it with the winner's key so the label stays accurate.
+  const mergedBreakdown = { ...rawBreakdown };
+  const tzA   = mergedBreakdown.timezone           ?? 0;
+  const tzB   = mergedBreakdown.preferredTimezones ?? 0;
+  mergedBreakdown.timezone = Math.max(tzA, tzB);
+  delete mergedBreakdown.preferredTimezones;
+
+  const expA  = mergedBreakdown.experienceLevel           ?? 0;
+  const expB  = mergedBreakdown.preferredExperienceLevel  ?? 0;
+  mergedBreakdown.experienceLevel = Math.max(expA, expB);
+  delete mergedBreakdown.preferredExperienceLevel;
+
+  const intA  = mergedBreakdown.interests          ?? 0;
+  const intB  = mergedBreakdown.preferredInterests ?? 0;
+  mergedBreakdown.interests = Math.max(intA, intB);
+  delete mergedBreakdown.preferredInterests;
+
   const hasBreakdown =
-    Object.keys(rawBreakdown || {}).length > 0;
+    Object.keys(mergedBreakdown || {}).length > 0;
 
   return (
     <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-base-300">
@@ -82,7 +110,7 @@ export default function MatchBadge({
         </div>
 
         {reasons.length > 0 && (
-          <span className="text-xs text-base-content/40 italic">
+          <span className="text-xs mr-2 text-right text-base-content/40 italic">
             {reasons[0]}
           </span>
         )}
@@ -95,7 +123,7 @@ export default function MatchBadge({
 
         <div className="space-y-1">
 
-          {Object.entries(rawBreakdown || {})
+          {Object.entries(mergedBreakdown || {})
 
             .filter(([, pts]) => pts > 0)
 

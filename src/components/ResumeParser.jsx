@@ -295,10 +295,10 @@ export default function ResumeParser({ onApply, onClose }) {
           )}
 
           {/* Looking for */}
-          {p.lookingFor?.length > 0 && (
+          {p.role?.length > 0 && (
             <ReviewSection title="Looking For">
               <div className="flex flex-wrap gap-1.5">
-                {p.lookingFor.map((r) => (
+                {p.role.map((r) => (
                   <Badge key={r} label={r} color="outline outline-primary" />
                 ))}
               </div>

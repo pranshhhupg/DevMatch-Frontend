@@ -103,13 +103,24 @@ export default function ViewProfile() {
 
   const {
     firstName, lastName, photoUrl, about, age, gender,
-    skills = [], lookingFor = [], goals = [],
+    skills = [], role = [], goals = [],
     availability, experienceLevel, timezone,
     hackathonInterest, startupInterest,
     learningGoals = [], projectIdeas = [],
+    // desired developer preferences
+    preferredRoles = [], preferredTimezones = [],
+    preferredInterests = [], preferredExperienceLevel,
+    preferredAvailability,
   } = user;
 
   const fullName = `${firstName} ${lastName}`.trim();
+
+  // Resolve displayed preferred roles — fall back to ["any"] if nothing set
+  const displayedPreferredRoles =
+    preferredRoles.length > 0 ? preferredRoles : ["any"];
+
+  // Roles this user actually plays (their own identity), filter "any"
+  const ownRoles = role.filter((r) => r !== "any");
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 flex flex-col gap-6">
@@ -170,19 +181,21 @@ export default function ViewProfile() {
           </Row>
         )}
 
-        {lookingFor.length > 0 && (
-          <Row label="Looking For">
-            <div className="flex flex-wrap gap-1.5">
-              {lookingFor.map((r) => (
-                <span key={r} className="badge badge-primary badge-sm  font-semibold capitalize">
-                  {r}
-                </span>
-              ))}
-            </div>
-          </Row>
-        )}
+        {/* My Role — what role this user identifies as / offers */}
+        <Row label="My Role">
+          <div className="flex flex-wrap gap-1.5">
+            {ownRoles.length > 0
+              ? ownRoles.map((r) => (
+                  <span key={r} className="badge badge-primary badge-sm font-semibold capitalize">
+                    {r}
+                  </span>
+                ))
+              : <span className="text-sm text-base-content/40">—</span>
+            }
+          </div>
+        </Row>
 
-        {(!skills.length && !lookingFor.length) && (
+        {!skills.length && !ownRoles.length && (
           <p className="text-sm text-base-content/40">No tech details shared yet.</p>
         )}
       </Section>
@@ -231,6 +244,59 @@ export default function ViewProfile() {
         )}
       </Section>
 
+      {/* Looking For (desired developer preferences) */}
+      <Section title="Looking For">
+        <Row label="Role">
+          <div className="flex flex-wrap gap-1.5">
+            {displayedPreferredRoles.map((r) => (
+              <span key={r} className="badge badge-primary badge-sm font-semibold capitalize">
+                {r}
+              </span>
+            ))}
+          </div>
+        </Row>
+
+        {preferredExperienceLevel && (
+          <Row label="Experience">
+            <span className="badge badge-primary badge-sm capitalize font-semibold">
+              {preferredExperienceLevel}
+            </span>
+          </Row>
+        )}
+
+        {preferredAvailability && (
+          <Row label="Availability">
+            <span className="badge badge-primary badge-sm capitalize font-semibold">
+              {preferredAvailability}
+            </span>
+          </Row>
+        )}
+
+        {preferredTimezones.length > 0 && (
+          <Row label="Timezone">
+            <div className="flex flex-wrap gap-1.5">
+              {preferredTimezones.map((tz) => (
+                <span key={tz} className="badge badge-primary badge-sm font-semibold">
+                  {tz}
+                </span>
+              ))}
+            </div>
+          </Row>
+        )}
+
+        {preferredInterests.length > 0 && (
+          <Row label="Interests">
+            <div className="flex flex-wrap gap-1.5">
+              {preferredInterests.map((i) => (
+                <span key={i} className="badge badge-primary badge-sm capitalize font-semibold">
+                  {i}
+                </span>
+              ))}
+            </div>
+          </Row>
+        )}
+      </Section>
+
       {/* Projects & Learning */}
       {(learningGoals.length > 0 || projectIdeas.length > 0) && (
         <Section title="Projects & Learning">
@@ -257,7 +323,7 @@ export default function ViewProfile() {
       )}
 
       {/* Posted Opportunities */}
-      <Section title="Posted Opportunities" >
+      <Section title="Posted Opportunities">
         {opportunities.length === 0 ? (
           <p className="text-sm text-base-content/40 text-center py-4">
             {firstName} hasn't posted any opportunities yet.

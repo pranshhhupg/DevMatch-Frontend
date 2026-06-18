@@ -95,7 +95,7 @@ export default function BioAssistant({ currentBio, formContext, onApply }) {
             skills:            formContext.skills,
             experienceLevel:   formContext.experienceLevel,
             goals:             formContext.goals,
-            lookingFor:        formContext.lookingFor,
+            role:        formContext.role,
             hackathonInterest: formContext.hackathonInterest,
             startupInterest:   formContext.startupInterest,
             availability:      formContext.availability,

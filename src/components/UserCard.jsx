@@ -5,15 +5,24 @@ import { BASE_URL } from "../utils/constants";
 import MatchBadge from "./MatchBadge";
 import DeveloperLink from "./DeveloperLink";
 
-/**
- * Receives a full feed item: { user, matchScore, matchReasons, matchBreakdown }
- */
 export default function UserCard({ feedItem }) {
-  const { user, matchScore, matchReasons, matchBreakdown , rawBreakdown} = feedItem;
+  const { user, matchScore, matchReasons, matchBreakdown, rawBreakdown } = feedItem;
   const dispatch = useDispatch();
 
   const { _id, firstName, lastName, photoUrl, about, age, gender, skills = [],
-          experienceLevel, availability, lookingFor = [] } = user;
+          experienceLevel, availability, role = [],
+          preferredRoles = [], preferredTimezones = [],
+          preferredInterests = [], preferredExperienceLevel,
+          preferredAvailability } = user;
+
+  // Own roles this dev plays — filter "any"
+  const ownRoles = role.filter((r) => r !== "any");
+
+  // Preferred roles to display — fall back to "any" if not set
+  const displayedPreferredRoles =
+    preferredRoles.filter((r) => r !== "any").length > 0
+      ? preferredRoles.filter((r) => r !== "any")
+      : ["any"];
 
   const handleAction = async (status) => {
     try {
@@ -29,91 +38,87 @@ export default function UserCard({ feedItem }) {
   };
 
   return (
-    
     <div className="card bg-base-200 shadow-xl w-80 sm:w-96">
       {/* Photo */}
       <figure className="relative">
-          <img
-            src={photoUrl}
-            alt={`${firstName} ${lastName}`}
-            className="w-full h-60 hover:h-96 object-cover transition-all duration-500 ease-in-out"
-            onError={(e) => {
-              e.target.src =
-                "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
-            }}
-          />
-        {/* Experience badge overlay */}
+        <img
+          src={photoUrl}
+          alt={`${firstName} ${lastName}`}
+          className="w-full h-60 hover:h-96 object-cover transition-all duration-500 ease-in-out"
+          onError={(e) => {
+            e.target.src =
+              "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+          }}
+        />
         {experienceLevel && (
           <span className="absolute top-2 right-2 badge badge-neutral capitalize text-xs">
             {experienceLevel}
           </span>
         )}
       </figure>
-      
+
       <div className="card-body p-4 gap-2">
-      <DeveloperLink userId={_id}>
-        {/* Name + meta */}
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <DeveloperLink userId={_id} className="hover:underline hover:text-primary transition-colors">
-              <h2 className="card-title text-base-content text-lg leading-tight">
-                {firstName} {lastName}
-              </h2>
-            </DeveloperLink>
-            {(age || gender) && (
-              <p className="text-xs text-base-content/50 mt-0.5">
-                {[age && `${age}y`, gender].filter(Boolean).join(" · ")}
-              </p>
+        <DeveloperLink userId={_id}>
+          {/* Name + meta */}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <DeveloperLink userId={_id} className="hover:underline hover:text-primary transition-colors">
+                <h2 className="card-title text-base-content text-lg leading-tight">
+                  {firstName} {lastName}
+                </h2>
+              </DeveloperLink>
+              {(age || gender) && (
+                <p className="text-xs text-base-content/50 mt-0.5">
+                  {[age && `${age}y`, gender].filter(Boolean).join(" · ")}
+                </p>
+              )}
+            </div>
+            {availability && (
+              <span className="badge badge-outline text-xs capitalize shrink-0">
+                {availability}
+              </span>
             )}
           </div>
-          {availability && (
-            <span className="badge badge-outline text-xs capitalize shrink-0">
-              {availability}
-            </span>
+
+          {/* About */}
+          {about && (
+            <p className="text-xs text-base-content/70 line-clamp-2">{about}</p>
           )}
-        </div>
 
-        {/* About */}
-        {about && (
-          <p className="text-xs text-base-content/70 line-clamp-2">{about}</p>
-        )}
+          {/* Skills */}
+          {skills.length > 0 && (
+            <div className="flex flex-wrap gap-1 my-2">
+              {skills.slice(0, 5).map((skill) => (
+                <span key={skill} className="badge badge-primary rounded-md badge-sm text-xs font-medium">
+                  {skill}
+                </span>
+              ))}
+              {skills.length > 5 && (
+                <span className="badge outline outline-primary rounded-md badge-sm text-xs">
+                  +{skills.length - 5}
+                </span>
+              )}
+            </div>
+          )}
 
-        {/* Skills */}
-        {skills.length > 0 && (
-          <div className="flex flex-wrap gap-1 my-2">
-            {skills.slice(0, 5).map((skill) => (
-              <span key={skill} className="badge badge-primary rounded-md badge-sm text-xs font-medium">
-                {skill}
-              </span>
-            ))}
-            {skills.length > 5 && (
-              <span className="badge outline outline-primary rounded-md badge-sm text-xs">
-                +{skills.length - 5}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Looking for */}
-        {lookingFor.length > 0 && (
+          {/* Looking For — desired developer role */}
           <p className="text-xs text-base-content/50">
             Looking for:{" "}
-            <span className="text-primary font-medium">
-              {lookingFor.join(", ")}
+            <span className="text-primary font-medium capitalize">
+              {displayedPreferredRoles.join(", ")}
             </span>
           </p>
-        )}
 
-
-        {/* Match Badge */}
-        <MatchBadge
-          score={matchScore}
-          reasons={matchReasons}
-          breakdown={matchBreakdown}
-          rawBreakdown={rawBreakdown}
-        />
+          {/* Match Badge */}
+          <MatchBadge
+            score={matchScore}
+            reasons={matchReasons}
+            breakdown={matchBreakdown}
+            rawBreakdown={rawBreakdown}
+          />
 
         </DeveloperLink>
+
         {/* Action buttons */}
         <div className="card-actions justify-between mt-2 gap-2">
           <button
@@ -131,6 +136,5 @@ export default function UserCard({ feedItem }) {
         </div>
       </div>
     </div>
-
   );
 }

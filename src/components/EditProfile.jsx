@@ -9,6 +9,7 @@ import ImageUploader from "./ImageUploader";
 import BioAssistant from "./BioAssistant";
 
 // ── Static option lists ────────────────────────────────────────────────────────
+
 const SKILL_SUGGESTIONS = [
   "React", "Angular", "Vue", "Next.js", "TypeScript", "JavaScript",
   "Node.js", "Express", "Python", "Django", "FastAPI", "Java", "Spring",
@@ -26,45 +27,64 @@ const SKILL_SUGGESTIONS = [
   "Excel", "PowerPoint", "Agile", "Scrum",
 ];
 
-const LOOKING_FOR_OPTIONS = [
-  { value: "frontend dev", label: "Frontend Dev"},
-  { value: "backend dev", label: "Backend Dev"},
-  { value: "full stack", label: "Full Stack"},
-  { value: "ml engineer", label: "ML Engineer"},
-  { value: "ai engineer", label: "AI Engineer"},
-  { value: "prompt engineer", label: "Prompt Engineer"},
-  { value: "data scientist", label: "Data Scientist"},
-  { value: "data analyst", label: "Data Analyst"},
-  { value: "designer", label: "Designer"},
-  { value: "product manager", label: "Product Manager"},
-  { value: "devops", label: "DevOps"},
-  { value: "mobile dev", label: "Mobile Dev"},
-  { value: "qa engineer", label: "QA Engineer"},
-  { value: "blockchain dev", label: "Blockchain Dev"},
-  { value: "consultant", label: "Consultant"},
-  { value: "any", label: "Anyone"},
+const ROLE_OPTIONS = [
+  { value: "frontend dev",    label: "Frontend Dev"    },
+  { value: "backend dev",     label: "Backend Dev"     },
+  { value: "full stack",      label: "Full Stack"      },
+  { value: "ml engineer",     label: "ML Engineer"     },
+  { value: "ai engineer",     label: "AI Engineer"     },
+  { value: "prompt engineer", label: "Prompt Engineer" },
+  { value: "data scientist",  label: "Data Scientist"  },
+  { value: "data analyst",    label: "Data Analyst"    },
+  { value: "designer",        label: "Designer"        },
+  { value: "product manager", label: "Product Manager" },
+  { value: "devops",          label: "DevOps"          },
+  { value: "mobile dev",      label: "Mobile Dev"      },
+  { value: "qa engineer",     label: "QA Engineer"     },
+  { value: "blockchain dev",  label: "Blockchain Dev"  },
+  { value: "consultant",      label: "Consultant"      },
+  { value: "any",             label: "Anyone"          },
 ];
 
 const GOALS_OPTIONS = [
-  { value: "build a startup", label: "Build a Startup"},
-  { value: "win hackathons",  label: "Win Hackathons" },
-  { value: "learn new tech",  label: "Learn New Tech" },
-  { value: "open source", label: "Open Source" },
-  { value: "freelance", label: "Freelance"  },
-  { value: "get a job", label: "Get a Job" },
+  { value: "build a startup", label: "Build a Startup" },
+  { value: "win hackathons",  label: "Win Hackathons"  },
+  { value: "learn new tech",  label: "Learn New Tech"  },
+  { value: "open source",     label: "Open Source"     },
+  { value: "freelance",       label: "Freelance"       },
+  { value: "get a job",       label: "Get a Job"       },
 ];
 
 const AVAILABILITY_OPTIONS = [
-  { value: "weekends",  label: "Weekends"},
-  { value: "evenings",  label: "Evenings"},
-  { value: "full-time", label: "Full-Time"},
-  { value: "flexible",  label: "Flexible" },
+  { value: "weekends",  label: "Weekends"  },
+  { value: "evenings",  label: "Evenings"  },
+  { value: "full-time", label: "Full-Time" },
+  { value: "flexible",  label: "Flexible"  },
+];
+
+const AVAILABILITY_OPTIONS_WITH_ANY = [
+  { value: "any",       label: "Any"       },
+  ...AVAILABILITY_OPTIONS,
 ];
 
 const EXPERIENCE_OPTIONS = [
-  { value: "beginner", label: "Beginner (< 1 yr)" },
-  { value: "intermediate", label: "Intermediate (1–3 yrs)"},
-  { value: "advanced", label: "Advanced (3+ yrs)"},
+  { value: "beginner",     label: "Beginner (< 1 yr)"     },
+  { value: "intermediate", label: "Intermediate (1–3 yrs)" },
+  { value: "advanced",     label: "Advanced (3+ yrs)"      },
+];
+
+const EXPERIENCE_OPTIONS_WITH_ANY = [
+  { value: "any",          label: "Any Level"              },
+  ...EXPERIENCE_OPTIONS,
+];
+
+const INTEREST_OPTIONS = [
+  { value: "open source", label: "Open Source"   },
+  { value: "hackathons",  label: "Hackathons"    },
+  { value: "startups",    label: "Startups"      },
+  { value: "freelance",   label: "Freelance"     },
+  { value: "learning",    label: "Learning"      },
+  { value: "research",    label: "Research"      },
 ];
 
 const COMMON_TIMEZONES = [
@@ -75,6 +95,7 @@ const COMMON_TIMEZONES = [
 ];
 
 // ── Helper: tag input ─────────────────────────────────────────────────────────
+
 function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
   const [input, setInput] = useState("");
   const filtered = suggestions.filter(
@@ -83,12 +104,9 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
 
   const add = (val) => {
     const trimmed = val.trim();
-    if (trimmed && !values.includes(trimmed)) {
-      onChange([...values, trimmed]);
-    }
+    if (trimmed && !values.includes(trimmed)) onChange([...values, trimmed]);
     setInput("");
   };
-
   const remove = (val) => onChange(values.filter((v) => v !== val));
 
   return (
@@ -114,10 +132,7 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === ",") {
-              e.preventDefault();
-              add(input);
-            }
+            if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(input); }
           }}
           placeholder={placeholder}
           className="input input-bordered input-sm w-full"
@@ -141,45 +156,137 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
   );
 }
 
+// ── Helper: badge multi-select ────────────────────────────────────────────────
+
+function BadgeMultiSelect({ options, selected, onToggle }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map(({ value, label }) => (
+        <label
+          key={value}
+          className={`badge cursor-pointer select-none transition-all ${
+            selected.includes(value)
+              ? "badge-primary"
+              : "outline outline-primary hover:badge-primary"
+          }`}
+        >
+          <input
+            type="checkbox"
+            className="hidden"
+            checked={selected.includes(value)}
+            onChange={() => onToggle(value)}
+          />
+          {label}
+        </label>
+      ))}
+    </div>
+  );
+}
+
+// ── Helper: radio group ───────────────────────────────────────────────────────
+
+function RadioGroup({ name, options, value, onChange }) {
+  return (
+    <div className="flex gap-3 flex-wrap">
+      {options.map(({ value: v, label }) => (
+        <label key={v} className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name={name}
+            value={v}
+            checked={value === v}
+            onChange={() => onChange(v)}
+            className="radio radio-primary radio-sm"
+          />
+          <span className="text-sm">{label}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
+
+// ── Helper: section header ────────────────────────────────────────────────────
+
+function SectionHeader({ icon, title, subtitle }) {
+  return (
+    <div className="mb-1">
+      <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider flex items-center gap-2">
+        {icon && <span>{icon}</span>}
+        {title}
+      </h2>
+      {subtitle && <p className="text-xs text-base-content/40 mt-0.5">{subtitle}</p>}
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
+
 export default function EditProfile() {
   const user     = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    firstName:  user?.firstName || "",
+    // ── basic ──
+    firstName: user?.firstName || "",
     lastName:  user?.lastName  || "",
-    photoUrl: user?.photoUrl || "",
-    age:    user?.age  || "",
-    gender: user?.gender || "",
-    about:  user?.about  || "",
-    skills: user?.skills || [],
-    lookingFor: user?.lookingFor || ["any"],
-    goals: user?.goals  || [],
-    availability: user?.availability || "flexible",
-    experienceLevel: user?.experienceLevel || "intermediate",
-    timezone:  user?.timezone   || "Asia/Kolkata",
+    photoUrl:  user?.photoUrl  || "",
+    age:       user?.age       || "",
+    gender:    user?.gender    || "",
+    about:     user?.about     || "",
+    // ── my tech profile ──
+    skills:           user?.skills           || [],
+    experienceLevel:  user?.experienceLevel  || "intermediate",
+    // ── my looking for (what I want to be found for / what I seek by role) ──
+    role:       user?.role       || ["any"],
+    // ── my own preferences / goals ──
+    goals:            user?.goals            || [],
+    availability:     user?.availability     || "flexible",
+    timezone:         user?.timezone         || "Asia/Kolkata",
     hackathonInterest: user?.hackathonInterest || false,
-    startupInterest:  user?.startupInterest  || false,
-    learningGoals: user?.learningGoals  || [],
-    projectIdeas: user?.projectIdeas || [],
+    startupInterest:   user?.startupInterest   || false,
+    learningGoals:    user?.learningGoals    || [],
+    projectIdeas:     user?.projectIdeas     || [],
+    // ── desired developer preferences (NEW) ──
+    preferredRoles:           user?.preferredRoles           || ["any"],
+    preferredTimezones:       user?.preferredTimezones       || [],
+    preferredInterests:       user?.preferredInterests       || [],
+    preferredExperienceLevel: user?.preferredExperienceLevel || "any",
+    preferredAvailability:    user?.preferredAvailability    || "any",
   });
 
-  const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState(null);
+  const [saving,         setSaving]         = useState(false);
+  const [toast,          setToast]          = useState(null);
   const [showResumeParser, setShowResumeParser] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-
-  // ── NEW: hold the pending file + local blob preview ──────────────────────
   const [pendingPhotoFile, setPendingPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview ] = useState(user?.photoUrl || "");
+  const [photoPreview,   setPhotoPreview]   = useState(user?.photoUrl || "");
 
+  // ── helpers ──────────────────────────────────────────────────────────────────
   const set = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
 
-  // Multi-checkbox toggle helper
   const toggleArray = (key, value) => {
     const arr = form[key];
-    set(key, arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]);
+    if (arr.includes(value)) {
+      // Deselect — never leave preferredRoles or role completely empty
+      const next = arr.filter((v) => v !== value);
+      if ((key === "preferredRoles" || key === "role") && next.length === 0) {
+        set(key, ["any"]);
+      } else {
+        set(key, next);
+      }
+    } else {
+      // Select
+      if ((key === "preferredRoles" || key === "role") && value === "any") {
+        // Choosing "any" clears all specific selections
+        set(key, ["any"]);
+      } else if (key === "preferredRoles" || key === "role") {
+        // Choosing a real role removes "any" from the array
+        set(key, [...arr.filter((v) => v !== "any"), value]);
+      } else {
+        set(key, [...arr, value]);
+      }
+    }
   };
 
   const showToast = (type, msg) => {
@@ -187,49 +294,48 @@ export default function EditProfile() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  // ── Apply AI-extracted resume data to the form ───────────────────────────
+  // ── resume parser apply ───────────────────────────────────────────────────────
   const handleResumeApply = (parsedData) => {
     setForm((prev) => ({
       ...prev,
-      ...(parsedData.firstName && { firstName: parsedData.firstName}),
-      ...(parsedData.lastName && { lastName:parsedData.lastName }),
-      ...(parsedData.age  && { age: parsedData.age }),
-      ...(parsedData.gender&& { gender: parsedData.gender}),
-      ...(parsedData.about && { about:  parsedData.about }),
-      ...(parsedData.skills?.length && { skills:     parsedData.skills     }),
-      ...(parsedData.lookingFor?.length && { lookingFor: parsedData.lookingFor }),
-      ...(parsedData.goals?.length && { goals: parsedData.goals }),
-      ...(parsedData.availability  && { availability: parsedData.availability }),
-      ...(parsedData.experienceLevel && { experienceLevel:  parsedData.experienceLevel}),
-      ...(parsedData.timezone  && { timezone: parsedData.timezone }),
-      ...(parsedData.learningGoals?.length && { learningGoals: parsedData.learningGoals    }),
-      ...(parsedData.projectIdeas?.length && { projectIdeas: parsedData.projectIdeas     }),
+      ...(parsedData.firstName        && { firstName:        parsedData.firstName        }),
+      ...(parsedData.lastName         && { lastName:         parsedData.lastName         }),
+      ...(parsedData.age              && { age:              parsedData.age              }),
+      ...(parsedData.gender           && { gender:           parsedData.gender           }),
+      ...(parsedData.about            && { about:            parsedData.about            }),
+      ...(parsedData.skills?.length   && { skills:           parsedData.skills           }),
+      ...(parsedData.role?.length && { role:     parsedData.role       }),
+      ...(parsedData.goals?.length    && { goals:            parsedData.goals            }),
+      ...(parsedData.availability     && { availability:     parsedData.availability     }),
+      ...(parsedData.experienceLevel  && { experienceLevel:  parsedData.experienceLevel  }),
+      ...(parsedData.timezone         && { timezone:         parsedData.timezone         }),
+      ...(parsedData.learningGoals?.length && { learningGoals: parsedData.learningGoals }),
+      ...(parsedData.projectIdeas?.length  && { projectIdeas:  parsedData.projectIdeas  }),
       hackathonInterest: parsedData.hackathonInterest ?? prev.hackathonInterest,
-      startupInterest: parsedData.startupInterest ?? prev.startupInterest,
+      startupInterest:   parsedData.startupInterest   ?? prev.startupInterest,
     }));
     setShowResumeParser(false);
     showToast("success", "Profile filled from your resume! Review and save.");
   };
 
-  // ── NEW: Store file locally + show instant preview — no network call ─────
+  // ── photo ────────────────────────────────────────────────────────────────────
   const handlePhotoSelect = (file) => {
     setPendingPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
   };
 
-  const navigate = useNavigate();
-
-  // ── Save: upload photo (if pending) then save profile ───────────────────
+  // ── save ─────────────────────────────────────────────────────────────────────
   const handleSave = async () => {
-    if (!form.firstName?.trim()) return showToast("error", "Name is required");
-    if (form.lookingFor.length === 0)
+    if (!form.firstName?.trim())
+      return showToast("error", "Name is required");
+    if (form.role.length === 0)
       return showToast("error", "Select at least one role you're looking for");
+    if (form.preferredRoles.length === 0)
+      return showToast("error", "Select at least one preferred developer role (or 'Anyone')");
 
     setSaving(true);
     try {
       let finalPhotoUrl = form.photoUrl;
-
-      // Only hit the upload endpoint if the user actually picked a new photo
       if (pendingPhotoFile) {
         setUploadingPhoto(true);
         const formData = new FormData();
@@ -237,10 +343,7 @@ export default function EditProfile() {
         const uploadRes = await axios.post(
           `${BASE_URL}/upload/profile-photo`,
           formData,
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "multipart/form-data" },
-          }
+          { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
         );
         finalPhotoUrl = uploadRes.data.photoUrl;
         setUploadingPhoto(false);
@@ -263,18 +366,20 @@ export default function EditProfile() {
     }
   };
 
+  // ─────────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Toast */}
       {toast && (
-        <div className={`toast toast-top toast-center z-50`}>
+        <div className="toast toast-top toast-center z-50">
           <div className={`alert alert-${toast.type}`}>
             <span>{toast.msg}</span>
           </div>
         </div>
       )}
 
-      {/* ── AI Resume Parser modal ──────────────────────────────── */}
+      {/* Resume parser modal */}
       {showResumeParser && (
         <ResumeParser
           onApply={handleResumeApply}
@@ -282,8 +387,8 @@ export default function EditProfile() {
         />
       )}
 
-      {/* ── Page header ────────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-2 ml-2">
+      {/* Page header */}
+      <div className="flex items-center justify-between mb-6 ml-2">
         <h1 className="text-2xl font-bold">Edit Profile</h1>
         <button
           type="button"
@@ -298,9 +403,7 @@ export default function EditProfile() {
 
         {/* ── Section 1: Basic Info ─────────────────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
-            Basic Info
-          </h2>
+          <SectionHeader title="Basic Info" />
 
           <div className="form-control">
             <label className="label"><span className="label-text">Name</span></label>
@@ -311,7 +414,6 @@ export default function EditProfile() {
               className="input input-bordered w-full"
               placeholder="Your First Name"
             />
-
             <input
               type="text"
               value={form.lastName}
@@ -322,7 +424,6 @@ export default function EditProfile() {
           </div>
 
           <div className="form-control">
-            {/* ── FIXED: onUpload now stores file locally; preview via blob URL ── */}
             <ImageUploader
               label="Profile Photo"
               currentImage={photoPreview}
@@ -340,11 +441,9 @@ export default function EditProfile() {
                 value={form.age}
                 onChange={(e) => set("age", parseInt(e.target.value) || "")}
                 className="input input-bordered w-full"
-                min={16}
-                max={80}
+                min={16} max={80}
               />
             </div>
-
             <div className="form-control">
               <label className="label"><span className="label-text">Gender</span></label>
               <select
@@ -363,9 +462,7 @@ export default function EditProfile() {
           <div className="form-control">
             <label className="label">
               <span className="label-text">About</span>
-              <span className="label-text-alt text-base-content/40">
-                {form.about.length}/300
-              </span>
+              <span className="label-text-alt text-base-content/40">{form.about.length}/300</span>
             </label>
             <textarea
               value={form.about}
@@ -375,7 +472,6 @@ export default function EditProfile() {
               maxLength={300}
               placeholder="Tell others about yourself..."
             />
-            {/* ── AI Bio Assistant ────────────────────────────── */}
             <div className="mt-2">
               <BioAssistant
                 currentBio={form.about}
@@ -386,11 +482,12 @@ export default function EditProfile() {
           </div>
         </section>
 
-        {/* ── Section 2: Tech Profile ───────────────────────────── */}
+        {/* ── Section 2: My Tech Profile ────────────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
-            Tech Profile
-          </h2>
+          <SectionHeader
+            title="My Tech Profile"
+            subtitle="Your own skills, experience, and what role you identify as"
+          />
 
           <TagInput
             label="Skills"
@@ -401,85 +498,49 @@ export default function EditProfile() {
           />
 
           <div className="form-control">
-            <label className="">
-              <span className="label mb-2">Experience Level</span>
-            </label>
-            <div className="flex gap-3 flex-wrap mb-2">
-              {EXPERIENCE_OPTIONS.map(({ value, label }) => (
-                <label key={value} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="experienceLevel"
-                    value={value}
-                    checked={form.experienceLevel === value}
-                    onChange={() => set("experienceLevel", value)}
-                    className="radio radio-primary radio-sm"
-                  />
-                  <span className="text-sm">{label}</span>
-                </label>
-              ))}
-            </div>
+            <label className="label"><span className="label-text">My Experience Level</span></label>
+            <RadioGroup
+              name="experienceLevel"
+              options={EXPERIENCE_OPTIONS}
+              value={form.experienceLevel}
+              onChange={(v) => set("experienceLevel", v)}
+            />
           </div>
-
-          <div className="form-control">
-            <div className="">
-              <h1 className="label text-md">Looking For</h1>
-              <h1 className="text-xs text-base-content/40 mb-2">
-                Who do you want to build with?
-              </h1>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {LOOKING_FOR_OPTIONS.map(({ value, label }) => (
-                <label
-                  key={value}
-                  className={`badge cursor-pointer select-none transition-all ${
-                    form.lookingFor.includes(value)
-                      ? "badge-primary"
-                      : "outline outline-primary hover:badge-primary"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    checked={form.lookingFor.includes(value)}
-                    onChange={() => toggleArray("lookingFor", value)}
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Section 3: Availability & Preferences ────────────── */}
-        <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
-            Availability & Preferences
-          </h2>
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Availability</span>
+              <span className="label-text">I identify as / I'm looking for collaborators who need</span>
             </label>
-            <div className="flex gap-3 flex-wrap">
-              {AVAILABILITY_OPTIONS.map(({ value, label }) => (
-                <label key={value} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="availability"
-                    value={value}
-                    checked={form.availability === value}
-                    onChange={() => set("availability", value)}
-                    className="radio radio-primary radio-sm"
-                  />
-                  <span className="text-sm">{label}</span>
-                </label>
-              ))}
-            </div>
+            <p className="text-xs text-base-content/40 mb-2">
+              What role do you play? Others looking for this role will find you.
+            </p>
+            <BadgeMultiSelect
+              options={ROLE_OPTIONS}
+              selected={form.role}
+              onToggle={(v) => toggleArray("role", v)}
+            />
+          </div>
+        </section>
+
+        {/* ── Section 3: My Availability & Interests ────────────── */}
+        <section className="card bg-base-200 p-5 flex flex-col gap-4">
+          <SectionHeader
+            title="My Availability & Interests"
+            subtitle="When you're free and what you're passionate about"
+          />
+
+          <div className="form-control">
+            <label className="label"><span className="label-text">My Availability</span></label>
+            <RadioGroup
+              name="availability"
+              options={AVAILABILITY_OPTIONS}
+              value={form.availability}
+              onChange={(v) => set("availability", v)}
+            />
           </div>
 
           <div className="form-control">
-            <label className="label"><span className="label-text">Timezone</span></label>
+            <label className="label"><span className="label-text">My Timezone</span></label>
             <select
               value={form.timezone}
               onChange={(e) => set("timezone", e.target.value)}
@@ -493,31 +554,14 @@ export default function EditProfile() {
 
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Goals</span>
-              <span className="label-text-alt text-base-content/40">
-                What are you building towards?
-              </span>
+              <span className="label-text">My Goals</span>
+              <span className="label-text-alt text-base-content/40">What are you building towards?</span>
             </label>
-            <div className="flex flex-wrap gap-2">
-              {GOALS_OPTIONS.map(({ value, label }) => (
-                <label
-                  key={value}
-                  className={`badge cursor-pointer select-none transition-all ${
-                    form.goals.includes(value)
-                      ? "badge-primary"
-                      : "outline outline-primary hover:badge-primary"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    checked={form.goals.includes(value)}
-                    onChange={() => toggleArray("goals", value)}
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
+            <BadgeMultiSelect
+              options={GOALS_OPTIONS}
+              selected={form.goals}
+              onToggle={(v) => toggleArray("goals", v)}
+            />
           </div>
 
           {/* Hackathon & Startup toggles */}
@@ -525,9 +569,7 @@ export default function EditProfile() {
             <label className="flex items-center justify-between cursor-pointer">
               <div>
                 <p className="font-medium text-md">Hackathon Interest</p>
-                <p className="text-xs text-base-content/40">
-                  I'm keen to join hackathons
-                </p>
+                <p className="text-xs text-base-content/40">I'm keen to join hackathons</p>
               </div>
               <input
                 type="checkbox"
@@ -536,15 +578,11 @@ export default function EditProfile() {
                 className="toggle toggle-primary"
               />
             </label>
-
             <div className="divider my-0" />
-
             <label className="flex items-center justify-between cursor-pointer">
               <div>
                 <p className="font-medium text-md">Startup Interest</p>
-                <p className="text-xs text-base-content/40">
-                  I'm open to building a startup
-                </p>
+                <p className="text-xs text-base-content/40">I'm open to building a startup</p>
               </div>
               <input
                 type="checkbox"
@@ -556,11 +594,121 @@ export default function EditProfile() {
           </div>
         </section>
 
-        {/* ── Section 4: Projects & Learning ───────────────────── */}
+        {/* ── Section 4: Looking For (Desired Developer) ────────── */}
+        <section className="card bg-base-200 p-5 flex flex-col gap-4 shadow-[0_0_20px_rgba(0,0,0,0.25)] shadow-primary border-2 border-primary/30">
+          <SectionHeader
+            icon="🔍"
+            title="Looking For"
+            subtitle="Describe your ideal collaborator — these preferences tune your feed"
+          />
+
+          {/* Preferred Roles */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Desired Developer Role</span>
+            </label>
+            <p className="text-xs text-base-content/40 mb-2">
+              What kind of developer do you want to collaborate with?
+            </p>
+            <BadgeMultiSelect
+              options={ROLE_OPTIONS}
+              selected={form.preferredRoles}
+              onToggle={(v) => toggleArray("preferredRoles", v)}
+            />
+          </div>
+
+          <div className="divider my-0" />
+
+          {/* Preferred Timezone */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Preferred Timezone(s)</span>
+            </label>
+            <p className="text-xs text-base-content/40 mb-2">
+              Which timezone(s) should your ideal match be in? Leave empty for any.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {COMMON_TIMEZONES.map((tz) => (
+                <label
+                  key={tz}
+                  className={`badge cursor-pointer select-none transition-all text-sm ${
+                    form.preferredTimezones.includes(tz)
+                      ? "badge-primary"
+                      : "outline outline-primary hover:badge-primary"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={form.preferredTimezones.includes(tz)}
+                    onChange={() => toggleArray("preferredTimezones", tz)}
+                  />
+                  {tz}
+                </label>
+              ))}
+            </div>
+            {form.preferredTimezones.length > 0 && (
+              <button
+                type="button"
+                className="btn btn-ghost btn-xs self-start mt-1 text-base-content/40"
+                onClick={() => set("preferredTimezones", [])}
+              >
+                Clear (any timezone)
+              </button>
+            )}
+          </div>
+
+          <div className="divider my-0" />
+
+          {/* Preferred Interests */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Desired Interests</span>
+            </label>
+            <p className="text-xs text-base-content/40 mb-2">
+              What should your ideal match be passionate about?
+            </p>
+            <BadgeMultiSelect
+              options={INTEREST_OPTIONS}
+              selected={form.preferredInterests}
+              onToggle={(v) => toggleArray("preferredInterests", v)}
+            />
+          </div>
+
+          <div className="divider my-0" />
+
+          {/* Preferred Experience Level */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Desired Experience Level</span>
+            </label>
+            <RadioGroup
+              name="preferredExperienceLevel"
+              options={EXPERIENCE_OPTIONS_WITH_ANY}
+              value={form.preferredExperienceLevel}
+              onChange={(v) => set("preferredExperienceLevel", v)}
+            />
+          </div>
+
+          <div className="divider my-0" />
+
+          {/* Preferred Availability */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Desired Availability</span>
+            </label>
+            <RadioGroup
+              name="preferredAvailability"
+              options={AVAILABILITY_OPTIONS_WITH_ANY}
+              value={form.preferredAvailability}
+              onChange={(v) => set("preferredAvailability", v)}
+            />
+          </div>
+        </section>
+
+        {/* ── Section 5: Projects & Learning ───────────────────── */}
         <section className="card bg-base-200 p-5 flex flex-col gap-4">
-          <h2 className="font-semibold text-base-content/70 text-md uppercase tracking-wider">
-            Projects & Learning
-          </h2>
+          <SectionHeader title="Projects & Learning" />
 
           <TagInput
             label="Learning Goals"
@@ -586,6 +734,7 @@ export default function EditProfile() {
           {saving && <span className="loading loading-spinner loading-sm" />}
           {saving ? "Saving…" : "Save Profile"}
         </button>
+
       </div>
     </div>
   );
