@@ -100,7 +100,7 @@ export default function MatchBadge({
 
       <div className="flex items-center justify-between">
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mr-2">
 
           <span className={`badge ${color} font-bold`}>
             {score}%
@@ -113,7 +113,7 @@ export default function MatchBadge({
         </div>
 
         {reasons.length > 0 && (
-          <span className="text-xs mr-2 text-right text-base-content/40 italic">
+          <span className="text-xs text-right text-base-content/40 italic">
             {reasons[0]}
           </span>
         )}
