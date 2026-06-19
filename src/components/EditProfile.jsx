@@ -210,7 +210,7 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
             onClick={() => add(input)}
             className="btn btn-primary btn-sm px-3"
           >
-            +
+            Add
           </button>
         </div>
         {input && filtered.length > 0 && (
@@ -228,7 +228,7 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
           </ul>
         )}
       </div>
-      <p className="text-xs text-base-content/40">Type and press + or Enter to add · comma also works</p>
+      <p className="text-xs text-base-content/40">Press Enter, Comma, or Add to list a skill.</p>
     </div>
   );
 }

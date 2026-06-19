@@ -16,6 +16,7 @@ import CommunityDetail from './components/communities/CommunityDetail'
 import SearchDevelopers from './components/SearchDevelopers'
 import Messenger from './components/Messenger'
 import ViewProfile from './components/ViewProfile'
+import About from './components/About'
 
 const App = function() {
   return (
@@ -38,6 +39,7 @@ const App = function() {
             <Route path = "/search" element = {<SearchDevelopers/>}/>
             <Route path="/messenger" element={<Messenger/>}/>
             <Route path="/developer/:userId" element={<ViewProfile/>}/>
+            <Route path="/about" element={<About/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

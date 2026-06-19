@@ -105,7 +105,7 @@ const ConversationItem = ({ conv, isActive, onClick }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // ChatPanel — the right-side embedded chat window
 // ─────────────────────────────────────────────────────────────────────────────
-const ChatPanel = ({ targetUserId, onMessageSent }) => {
+const ChatPanel = ({ targetUserId, onMessageSent, onBack }) => {
   const user = useSelector((s) => s.user);
   const dispatch = useDispatch();
 
@@ -249,7 +249,7 @@ const ChatPanel = ({ targetUserId, onMessageSent }) => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full ">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-base-300 bg-base-100/80 backdrop-blur flex-shrink-0">
         <div className="avatar">
@@ -263,14 +263,22 @@ const ChatPanel = ({ targetUserId, onMessageSent }) => {
             />
           </div>
         </div>
-        <div>
-          <h2 className="font-bold text-base leading-tight">
+        <div className="flex-1 min-w-0">
+          <h2 className="font-bold text-base leading-tight truncate">
             {targetUser?.firstName} {targetUser?.lastName}
           </h2>
           <p className="text-xs text-base-content/50 capitalize">
             {targetUser?.experienceLevel || 'Developer'}
           </p>
         </div>
+        {onBack && (
+          <button
+            className="md:hidden btn btn-ghost font-semibold text-md bg-primary btn-sm  ml-auto flex-shrink-0"
+            onClick={onBack}
+          >
+           Back
+          </button>
+        )}
       </div>
 
       {/* Messages */}
@@ -585,19 +593,11 @@ const Messenger = () => {
       >
         {activeUserId ? (
           <>
-            {/* Mobile back button */}
-            <div className="md:hidden px-3 pt-3 flex-shrink-0">
-              <button
-                className="btn btn-ghost btn-sm gap-1"
-                onClick={() => setSearchParams({})}
-              >
-                ← Back
-              </button>
-            </div>
             <ChatPanel
               key={activeUserId}
               targetUserId={activeUserId}
               onMessageSent={handleMessageSent}
+              onBack={() => setSearchParams({})}
             />
           </>
         ) : (

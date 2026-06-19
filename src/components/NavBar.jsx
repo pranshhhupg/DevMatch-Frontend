@@ -65,19 +65,23 @@ const NavBar = () => {
       <div className="navbar bg-base-300 shadow-sm px-5">
 
         {/* LEFT SIDE */}
-        <div className="flex-1 flex items-center gap-2">
+        <div className="flex-1 flex items-center gap-1">
 
           {/* HAMBURGER BUTTON */}
           <button
-            className="btn btn-ghost text-xl"
+            className="btn btn-ghost px-2 md:px-4 text-xl"
             onClick={() => setOpen(true)}
           >
             ☰
           </button>
 
-          <Link to="/feed" className="btn btn-ghost text-xl">
-            DevMatch
+          <Link to="/feed" className="btn btn-ghost px-1 md:text-2xl text-xl">
+            <p>
+              Dev
+              <span className="text-primary">Match</span>
+            </p>
           </Link>
+
         </div>
 
         {/* RIGHT SIDE */}
@@ -190,6 +194,7 @@ const NavBar = () => {
               Status
             </Link>
           </li>
+
           <li>
             <Link to="/messenger" onClick={() => setOpen(false)} className="flex items-center justify-between">
               <span>Messages</span>
@@ -198,6 +203,11 @@ const NavBar = () => {
                   {totalUnread > 99 ? '99+' : totalUnread}
                 </span>
               )}
+            </Link>
+          </li>
+          <li>
+            <Link to="/about" onClick={() => setOpen(false)}>
+              About
             </Link>
           </li>
         </ul>
