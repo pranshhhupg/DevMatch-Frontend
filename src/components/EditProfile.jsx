@@ -178,10 +178,24 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
       <div className="relative">
         <input
           type="text"
+          inputMode="text"
+          enterKeyHint="done"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            // Android soft-keyboard may append "\n" or "," instead of firing a key event
+            if (val.endsWith(",") || val.endsWith("\n")) {
+              add(val.replace(/[,\n]+$/, ""));
+            } else {
+              setInput(val);
+            }
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add(input); }
+          }}
+          // Android doesn't reliably fire onKeyDown for Enter — onKeyUp is the fallback
+          onKeyUp={(e) => {
+            if (e.key === "Enter") { e.preventDefault(); add(input); }
           }}
           placeholder={placeholder}
           className="input input-bordered input-sm w-full"
@@ -193,6 +207,8 @@ function TagInput({ label, placeholder, values, onChange, suggestions = [] }) {
                 key={s}
                 className="px-3 py-1.5 text-sm hover:bg-base-200 cursor-pointer"
                 onMouseDown={() => add(s)}
+                // onTouchEnd for mobile — onMouseDown doesn't fire on touch
+                onTouchEnd={(e) => { e.preventDefault(); add(s); }}
               >
                 {s}
               </li>

@@ -347,6 +347,7 @@ const ChatPanel = ({ targetUserId, onMessageSent }) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={1}
+            enterKeyHint="send"
           />
           <button
             className="btn btn-primary btn-sm rounded-2xl px-4 h-[44px]"
@@ -356,7 +357,7 @@ const ChatPanel = ({ targetUserId, onMessageSent }) => {
           </button>
         </div>
         <p className="text-[10px] text-base-content/30 mt-1 px-1">
-          Enter to send · Shift+Enter for new line
+          Enter to send · use ↵ on keyboard for new line
         </p>
       </div>
     </div>

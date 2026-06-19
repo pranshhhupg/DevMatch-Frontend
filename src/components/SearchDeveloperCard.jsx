@@ -83,7 +83,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
                 "https://thumbs.dreamstime.com/b/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg?w=768";
             }}
           />
-        </DeveloperLink>
+        
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -96,21 +96,20 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
             </span>
           </div>
         )}
+      </DeveloperLink>
       </div>
 
       {/* ── Content ── */}
-      <div className="p-4 flex flex-col flex-1 gap-3">
-
+      <DeveloperLink userId={_id} className="h-full p-4 flex flex-col flex-1 gap-3">
+      <div className="flex flex-col">
+      
         {/* Name */}
         <div>
-          <DeveloperLink
-            userId={_id}
-            className="hover:text-primary transition-colors"
-          >
+          
             <h2 className="text-xl font-bold leading-tight">
               {firstName} {lastName}
             </h2>
-          </DeveloperLink>
+
 
           {/* Role this dev plays — was incorrectly "Looking for" before */}
           {ownRoles.length > 0 && (
@@ -129,7 +128,7 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
 
         {/* Skills */}
         {skills.length > 0 && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 mt-2">
             {skills.slice(0, 4).map((skill) => (
               <span
                 key={skill}
@@ -160,9 +159,12 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
             <span>{errMsg}</span>
           </div>
         )}
+      
+      </div> 
+      </DeveloperLink>  
 
-        {/* Connect Button */}
-        <div className="mt-auto pt-2">
+      {/* Connect Button */}
+      <div className="mt-auto pt-2 px-4 pb-4">
           {status === "connected" ? (
             <button
               className="btn btn-success w-full rounded-lg text-base font-semibold"
@@ -184,8 +186,9 @@ export default function SearchDeveloperCard({ user, highlight = "" }) {
               {status === "loading" ? "Sending..." : "Connect"}
             </button>
           )}
+          
         </div>
-      </div>
+          
     </div>
   );
 }
