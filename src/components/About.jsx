@@ -194,9 +194,9 @@ const features = [
           <div className="card bg-base-100 border border-base-300">
             <div className="card-body md:p-8 p-6 flex-col sm:flex-row gap-8 items-start">
               {/* Avatar placeholder */}
-              <div className="hidden md:flex w-20 h-20 rounded-full bg-primary/15 items-center justify-center text-3xl font-extrabold text-primary flex-shrink-0 ring-4 ring-base-100 shadow">
-  PG
-</div>
+              <div className="w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center text-3xl font-extrabold text-primary flex-shrink-0 ring-4 ring-base-100 shadow">
+                PG
+              </div>
               <div className="flex-1">
                 <h3 className="text-xl text-primary font-bold mb-0.5">Pranshu Gupta</h3>
                 <p className="text-sm text-base-content/50 mb-4">
