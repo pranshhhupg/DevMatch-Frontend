@@ -29,7 +29,7 @@ const Connections = () => {
   }, []);
 
   const filteredUsers = users?.filter((user) => {
-    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+    const fullName = `${user?.firstName} ${user?.lastName}`.toLowerCase();
     return fullName.includes(search.toLowerCase());
   });
 

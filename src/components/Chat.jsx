@@ -32,6 +32,7 @@ const Chat = () => {
       });
       setTargetUser(res.data);
     } catch (err) {
+      console.log(err.response);
     }
   };
 
@@ -155,7 +156,13 @@ const Chat = () => {
     setInput(val);
   };
 
-  const handleKeyDown = () => {};
+  const handleKeyDown = (e) => {
+    // Desktop only: Enter sends, Shift+Enter inserts newline
+    if (!isMobile && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      HandleSendBtn();
+    }
+  };
 
   return (
     <div className="w-full md:w-2/3 lg:w-2/3 mx-auto md:mt-8 h-[90vh] flex flex-col bg-base-200 border border-base-300 md:rounded-3xl shadow-2xl overflow-hidden">
@@ -263,7 +270,7 @@ const Chat = () => {
           </button>
         </div>
         <p className="text-[11px] text-base-content/40 mt-2 px-1">
-          {isMobile ? 'Tap ➤ to send · use ↵ for new line' : 'Enter to send · Shift+Enter for new line'}
+        {isMobile ? 'Tap ➤ to send · Enter for new line' : 'Enter to send · Shift+Enter for new line'}
         </p>
       </div>
     </div>
