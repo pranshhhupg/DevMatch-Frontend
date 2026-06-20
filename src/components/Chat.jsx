@@ -22,8 +22,8 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
 
-  // Stable across renders — evaluated once at mount
-  const isMobile = useRef(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)).current;
+  // Plain variable — only needed inside handleKeyDown, no need for a ref
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const fetchTargetUser = async () => {
     try {
@@ -31,7 +31,8 @@ const Chat = () => {
         withCredentials: true,
       });
       setTargetUser(res.data);
-    } catch (err) {}
+    } catch (err) {
+    }
   };
 
   const fetchChatMessages = async () => {
@@ -57,7 +58,9 @@ const Chat = () => {
       });
 
       setMessage(msgs);
-    } catch (err) {}
+    } catch (err) {
+      // console.log(err.response);
+    }
   };
 
   useEffect(() => {
@@ -65,7 +68,11 @@ const Chat = () => {
     fetchTargetUser();
 
     axios
-      .post(`${BASE_URL}/chat/mark-read/${targetUserId}`, {}, { withCredentials: true })
+      .post(
+        `${BASE_URL}/chat/mark-read/${targetUserId}`,
+        {},
+        { withCredentials: true }
+      )
       .catch(() => {});
     dispatch(markConversationRead({ userId: targetUserId }));
   }, []);
@@ -85,11 +92,18 @@ const Chat = () => {
         minute: '2-digit',
       });
 
-      setMessage((prev) => [...prev, { firstName, lastName, photoUrl, text, time, senderId }]);
+      setMessage((prev) => [
+        ...prev,
+        { firstName, lastName, photoUrl, text, time, senderId },
+      ]);
 
       if (senderId && senderId !== userId) {
         axios
-          .post(`${BASE_URL}/chat/mark-read/${targetUserId}`, {}, { withCredentials: true })
+          .post(
+            `${BASE_URL}/chat/mark-read/${targetUserId}`,
+            {},
+            { withCredentials: true }
+          )
           .catch(() => {});
         dispatch(markConversationRead({ userId: targetUserId }));
       }
@@ -105,9 +119,8 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [message]);
 
-  // Always use the stable socketRef — never create a new socket here
-  const HandleSendBtn = (textOverride) => {
-    const textToSend = (textOverride ?? input).trim();
+  const HandleSendBtn = () => {
+    const textToSend = input.trim();
     if (!textToSend || !socketRef.current) return;
 
     const now = new Date().toISOString();
@@ -125,20 +138,8 @@ const Chat = () => {
     setInput('');
   };
 
-  // Mirrors ChatPanel in Messenger.jsx exactly:
-  // On Android, the return key injects '\n' into the value via onChange
-  // before (or instead of) onKeyDown firing. Intercept it here and send.
-  const handleChange = (e) => {
-    const val = e.target.value;
-    if (isMobile && val.endsWith('\n')) {
-      HandleSendBtn(val.trimEnd());
-      return;
-    }
-    setInput(val);
-  };
-
-  // Desktop only: Enter sends, Shift+Enter inserts newline.
-  // On mobile this never triggers a send — the button or handleChange does.
+  // On mobile: Enter inserts a newline (default textarea behaviour), Send button sends.
+  // On desktop: Enter sends; Shift+Enter inserts a newline.
   const handleKeyDown = (e) => {
     if (!isMobile && e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -181,29 +182,49 @@ const Chat = () => {
               : msg.firstName === user.firstName;
 
           return (
-            <div key={index} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[75%] flex gap-2 items-end ${isMine ? 'flex-row-reverse' : ''}`}>
+            <div
+              key={index}
+              className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-[75%] flex gap-2 items-end ${
+                  isMine ? 'flex-row-reverse' : ''
+                }`}
+              >
                 <div className="avatar">
                   <div className="w-8 h-8 rounded-full">
                     <img
-                      src={msg.photoUrl || 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'}
+                      src={
+                        msg.photoUrl ||
+                        'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                      }
                       alt="avatar"
                     />
                   </div>
                 </div>
 
-                <div className={`px-4 py-3 rounded-2xl shadow-md break-words ${
-                  isMine ? 'bg-primary text-primary-content rounded-br-md' : 'bg-base-200 rounded-bl-md'
-                }`}>
+                <div
+                  className={`px-4 py-3 rounded-2xl shadow-md break-words ${
+                    isMine
+                      ? 'bg-primary text-primary-content rounded-br-md'
+                      : 'bg-base-200 rounded-bl-md'
+                  }`}
+                >
                   {!isMine && (
                     <p className="text-xs font-semibold mb-1 opacity-70">
                       {msg.firstName} {msg.lastName}
                     </p>
                   )}
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                  <div className={`text-[10px] mt-2 flex justify-end ${
-                    isMine ? 'text-primary-content/70' : 'text-base-content/40'
-                  }`}>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    {msg.text}
+                  </p>
+                  <div
+                    className={`text-[10px] mt-2 flex justify-end ${
+                      isMine
+                        ? 'text-primary-content/70'
+                        : 'text-base-content/40'
+                    }`}
+                  >
                     {msg.time || 'Now'}
                   </div>
                 </div>
@@ -221,12 +242,12 @@ const Chat = () => {
             className="textarea textarea-bordered flex-1 resize-none rounded-2xl min-h-[52px] max-h-36"
             placeholder="Type a message..."
             value={input}
-            onChange={handleChange}
+            onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <button
             className="btn btn-primary rounded-2xl px-6"
-            onClick={() => HandleSendBtn()}
+            onClick={HandleSendBtn}
           >
             ➤
           </button>
